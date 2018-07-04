@@ -1,7 +1,7 @@
 slayer.py
 ================
 
-.. code:: python
+::
 
                         (
                           )     (
@@ -29,14 +29,9 @@ slayer.py
 
 
 
-`Slayer` is a Python wrapper around `deck.gl`_(deck.gl) 
+`Slayer` is a Python wrapper around `deck.gl`_.
 
 .. _deck.gl: http://deck.gl/#/
-
-Name 
-================
-
-Slayer is short for "Spatial Layers" and is also a manufacturer of espresso machines
 
 Example usage
 ================
