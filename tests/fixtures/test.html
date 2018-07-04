@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>slayer.py</title>
+
+    <script src='https://unpkg.com/deck.gl@latest/deckgl.min.js'></script>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+
+    <style>
+      body {margin:0;padding:0;overflow:hidden;}
+    </style>
+  </head>
+  <body>
+    <div id="container" style="width: 100vw; height: 100vh;background-color:black;"></div>
+    <script>
+
+
+     const INITIAL_VIEWPORT_STATE = {
+       latitude: 37.78,
+       longitude: -122.45,
+       zoom: 13,
+       pitch: 0
+     };
+
+      const layers = [
+          new ScatterplotLayer({
+		data: [{"lat":37.6957743533,"lng":-122.5394439697,"city":"SF"},{"lat":37.8265990579,"lng":-122.2874450684,"city":"SF"},{"lat":36.0382725592,"lng":-115.1940536499,"city":"Las Vegas"},{"lat":33.408516828,"lng":-112.1319580078,"city":"Phoenix"},{"lat":18.9634415956,"lng":-99.1845703125,"city":"Ciudad de Mexico"},{"lat":41.5820659886,"lng":-88.1597900391,"city":"Chicago"},{"lat":40.7259253407,"lng":-73.999786377,"city":"New York"}],
+		getColor: function (x) { return x["color"] || [0, 0, 0] },
+		getPosition: function (x) { return [x["lng"], x["lat"]] },
+		getRadius: function (x) { return x["radius"] || 100 }})
+      ];
+
+      const deckgl = new deck.DeckGL({
+        container: 'container',
+        mapboxApiAccessToken: '',
+        viewState: INITIAL_VIEWPORT_STATE,
+        controller: deck.MapController,
+        onViewportChange,
+        layers
+      });
+
+      function onViewportChange(viewport) {
+        deckgl.setProps({viewState: viewport});
+      }
+    </script>
+  </body>
+</html>

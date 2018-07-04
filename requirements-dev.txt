@@ -1,0 +1,5 @@
+flake8
+pandas
+pytest
+ipdb
+ipython
