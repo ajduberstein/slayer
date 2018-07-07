@@ -1,5 +1,4 @@
 import ast
-import json
 import re
 import textwrap
 
@@ -7,7 +6,6 @@ import textwrap
 from dill.source import getsource
 import jiphy
 from yapf.yapflib.yapf_api import FormatCode
-import js2py
 
 
 """
@@ -44,21 +42,8 @@ def func_to_str(f):
 
 def func_to_js(f):
     if is_lambda(f):
-        raise UnsupportedException("lambda functions not yet supported. Use a closure instead.")
+        raise UnsupportedException("Lambdas not supported. Use a closure instead.")
     return str_to_js(func_to_str(f))
-
-
-def verify_js_equals_pyfunc(pyfunc, jsfunc, js_func_name, datum):
-    datum = json.loads(datum)
-    js = 'function() {\n\t'
-    js += js2py(jsfunc)
-    js += '\n\tvar datum = {};'.format(datum)
-    js += '\n\treturn {}(datum)}'.format(js_func_name)
-    js_result = js2py.eval_js(js)
-    py_result = pyfunc(datum)
-    if js_result == py_result:
-        return (True, js_result, py_result)
-    return (False, js_result, py_result)
 
 
 def str_to_js(python_str):
