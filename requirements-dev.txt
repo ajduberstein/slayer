@@ -3,3 +3,4 @@ pandas
 pytest
 ipdb
 ipython
+slimit

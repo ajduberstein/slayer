@@ -1,7 +1,5 @@
 from __future__ import print_function
 
-import difflib
-
 import slimit
 
 from slayer.string_utils import suppress_stderr

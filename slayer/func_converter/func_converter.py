@@ -8,15 +8,6 @@ import jiphy
 from yapf.yapflib.yapf_api import FormatCode
 
 
-"""
-Reasons for this module:
-1) I don't want the end-user writing JavaScript. Preferably you have to know nothing about JS
-to use this library.
-2) I do want the flexibility granted by deck.gl's get{Color,Position} functions
-3) It's not that hard to implement a Python function to JS function library
-"""
-
-
 class FunctionInvalidException(Exception):
     pass
 
