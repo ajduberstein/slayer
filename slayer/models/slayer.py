@@ -1,6 +1,7 @@
 import os.path
 import jinja2
 
+from slimit.parser import Parser
 
 from .layer import Layer
 from .viewport import Viewport
@@ -18,8 +19,9 @@ class Slayer(object):
 
     Attributes:
         layers (:obj:`list` of :obj:`Layer`): Layers to be plotted on a map
-        viewport (:obj:`Viewport`): Viewport that defines the angle at which the user
+        viewport (:obj:`slayer.Viewport`): Viewport that defines the angle at which the user
             observes the layers
+        mapbox_api_key (:obj:`str`, optional): Public API key from Mapbox
     """
 
     def __init__(
@@ -30,7 +32,7 @@ class Slayer(object):
     ):
         self.viewport = viewport
         self._layers = layers or []
-        self.mapbox_api_key = mapbox_api_key
+        self.mapbox_api_key = os.environ.get('MAPBOX_API_KEY') or mapbox_api_key
 
     def __add__(self, obj):
         """Appends a Layer or creates a Viewport
@@ -54,7 +56,7 @@ class Slayer(object):
         layers = [layer.render() for layer in self._layers]
         return ',\n'.join(layers)
 
-    def to_html(self, interactive=False):
+    def to_html(self, interactive=False, validate_js=True):
         """Converts all layers and viewport objects into HTML
 
         If interactive and in a CLI, attempts to open a web browser
@@ -66,12 +68,37 @@ class Slayer(object):
         """
         rendered_layers = self.compile_layers()
         rendered_viewport = self.viewport.render()
-        html = j2_env.get_template('body.htm').render(
-                header=j2_env.get_template('header.htm').render(),
-                footer=j2_env.get_template('footer.htm').render(),
+        js = j2_env.get_template('body.j2').render(
                 layers=rendered_layers,
                 viewport=rendered_viewport,
                 mapbox_api_key=self.mapbox_api_key,
                 interactive=interactive)
+        if validate_js:
+            validate_js(js)
+        header = j2_env.get_template('header.j2').render(),
+        footer = j2_env.get_template('footer.j2').render(),
+        html = j2_env.get_template('body.j2').render(
+            header=header,
+            js=js,
+            footer=footer,
+        )
         if interactive:
             return display_html(html)
+        return html
+
+
+def validate_js(js_str):
+    """Checks for valid JS syntax
+
+        Throws an exception if the syntax is invalid
+
+        Exists to help catch errors before DOM rendering
+
+        Args:
+            js_str (str): String of JavaScript to check
+    """
+    try:
+        parser = Parser()
+        parser.parse(js_str)
+    except SyntaxError as e:
+        raise SyntaxError('Syntax error in JavaScript rendering', e)
