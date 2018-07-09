@@ -57,7 +57,7 @@ class Slayer(object):
         layers = [layer.render() for layer in self._layers]
         return ',\n'.join(layers)
 
-    def to_html(self, interactive=False, js_only=True, validate_js=False):
+    def to_html(self, interactive=False, js_only=False, validate_js=False):
         """Converts all layers and viewport objects into HTML
 
         If interactive and in a CLI, attempts to open a web browser
@@ -72,7 +72,7 @@ class Slayer(object):
                 the JS rendered to the DOM is valid ES5 JavaScript.
 
         Returns:
-            str: Rendered HTML from Jinja template
+            str: Rendered HTML
         """
         rendered_layers = self.compile_layers()
         rendered_viewport = self.viewport.render()
@@ -82,14 +82,11 @@ class Slayer(object):
                 mapbox_api_key=self.mapbox_api_key,
                 interactive=interactive)
         if js_only:
+            print(js)
             return js
-        header = j2_env.get_template('header.j2').render(),
-        footer = j2_env.get_template('footer.j2').render(),
-        html = j2_env.get_template('body.j2').render(
-            header=header,
-            js=js,
-            footer=footer,
-        )
+        header = j2_env.get_template('header.j2').render()
+        footer = j2_env.get_template('footer.j2').render()
+        html = j2_env.get_template('body.j2').render(header=header, js=js, footer=footer)
         if interactive:
             return display_html(html)
         return html
