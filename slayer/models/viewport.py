@@ -24,7 +24,7 @@ class Viewport(RenderMixin):
 
     def render(self):
         template = jinja2.Template('''
-     const INITIAL_VIEWPORT_STATE = {
+     var INITIAL_VIEWPORT_STATE = {
        latitude: {{ latitude }},
        longitude: {{ longitude }},
        zoom: {{ zoom }},

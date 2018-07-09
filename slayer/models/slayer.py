@@ -6,6 +6,7 @@ from slimit.parser import Parser
 from .layer import Layer
 from .viewport import Viewport
 from ..io import display_html
+from ..string_utils import suppress_stderr
 
 
 TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), '../templates/')
@@ -56,25 +57,32 @@ class Slayer(object):
         layers = [layer.render() for layer in self._layers]
         return ',\n'.join(layers)
 
-    def to_html(self, interactive=False, validate_js=True):
+    def to_html(self, interactive=False, js_only=True, validate_js=False):
         """Converts all layers and viewport objects into HTML
 
         If interactive and in a CLI, attempts to open a web browser
 
         If interactive via an ipynb, emits results to the output cell
 
+        Args:
+            interactive (bool): Should be True if running in iPython or Jupyter
+            js_only (bool): Should be True if the user wants to return only the
+                compiled JS
+            validate_js (bool): Not yet implemented. Should be True if user wants to validate that
+                the JS rendered to the DOM is valid ES5 JavaScript.
+
         Returns:
             str: Rendered HTML from Jinja template
         """
         rendered_layers = self.compile_layers()
         rendered_viewport = self.viewport.render()
-        js = j2_env.get_template('body.j2').render(
+        js = j2_env.get_template('js.j2').render(
                 layers=rendered_layers,
                 viewport=rendered_viewport,
                 mapbox_api_key=self.mapbox_api_key,
                 interactive=interactive)
-        if validate_js:
-            validate_js(js)
+        if js_only:
+            return js
         header = j2_env.get_template('header.j2').render(),
         footer = j2_env.get_template('footer.j2').render(),
         html = j2_env.get_template('body.j2').render(
@@ -87,8 +95,8 @@ class Slayer(object):
         return html
 
 
-def validate_js(js_str):
-    """Checks for valid JS syntax
+def check_syntax(js_str):
+    """Checks for valid JS ES5 syntax
 
         Throws an exception if the syntax is invalid
 
@@ -98,7 +106,8 @@ def validate_js(js_str):
             js_str (str): String of JavaScript to check
     """
     try:
-        parser = Parser()
-        parser.parse(js_str)
+        with suppress_stderr():
+            parser = Parser()
+            parser.parse(js_str)
     except SyntaxError as e:
-        raise SyntaxError('Syntax error in JavaScript rendering', e)
+        raise SyntaxError('User-provided JS is not valid ES5: %s' % e)

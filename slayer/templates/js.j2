@@ -1,16 +1,16 @@
 {{ viewport }};
 
-const layers = [
+var layers = [
   {{ layers }}
 ];
 
-const deckgl = new deck.DeckGL({
+var deckgl = new deck.DeckGL({
   container: 'container',
   mapboxApiAccessToken: '{{ mapbox_api_key }}',
   viewState: INITIAL_VIEWPORT_STATE,
   controller: deck.MapController,
-  onViewportChange,
-  layers
+  onViewportChange: onViewportChange,
+  layers: layers
 });
 
 function onViewportChange(viewport) {

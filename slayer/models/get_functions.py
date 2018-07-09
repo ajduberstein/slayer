@@ -3,7 +3,7 @@ ORANGE_RGB = [255, 127, 0]
 
 def make_js_get_position(position_field_names):
     if len(position_field_names) == 2:
-        return 'function (x) { return [x["%s"], x["%s"] }' % (position_field_names[0], position_field_names[1])
+        return 'function (x) { return [x["%s"], x["%s"]] }' % (position_field_names[0], position_field_names[1])
     return 'function (x) { return x["%s"] }'
 
 
