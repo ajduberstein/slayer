@@ -16,8 +16,11 @@ VALID_LAYER_KEYWORDS = {
     'on_hover',
     'data',
     'on_click',
-    'get_position',
     'get_color',
+    'get_position',
+    'get_radius',
+    'get_start_position',
+    'get_end_position',
     'highlight_color',
     'highlighted_object_index',
     'auto_highlight',
@@ -32,14 +35,6 @@ class Layer(RenderMixin):
 
         Args:
             data (:obj:`list` of :obj:`dict`): Data to be plotted, ideally as a Pandas DataFrame
-            position_field (str): Column name in `data` that indicates a datum's position
-
-                If `data` has a separate x and y column, both should be specified in a list,
-                like `position_field=['lng', 'lat']`, otherwise a single string name should be
-                provided, like `position_field='coordinates'`.
-
-                Please be mindful that position is specified in an (x, y)--lat-lon pairs should
-                be listed as (lon, lat), since longitude is a horizontal or x value.
             color_field (`str`): Column name that specifies an data entry's color
             js_function_overrides (:obj:`dict` of :obj`(str, str)`): Dictionary that allows the user to
                 specify JS functions for more control of behavior in deck.gl.
@@ -57,15 +52,13 @@ class Layer(RenderMixin):
     def __init__(
         self,
         data,
-        position_field=['longitude', 'latitude'],
         color_field='color',
-        js_function_overrides={},
+        js_function_overrides={}
     ):
         super(Layer, self).__init__()
         if isinstance(data, pd.DataFrame):
             data = data.to_json(orient='records')
         self.data = data
-        self.get_position = make_js_get_position(position_field)
         self.get_color = make_js_get_color(color_field)
         class_name = self.__class__.__name__
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
@@ -91,9 +84,9 @@ class Layer(RenderMixin):
         for attr in self.__dict__.keys():
             if attr not in self.valid_layer_keywords:
                 continue
-            js_func_str = self.js_function_overrides.get(attr) or attr
+            js_func_str = self.js_function_overrides.get(attr) or '{{ %s }}' % attr
             js_chart_args.append(
-                '\n\t\t%s: {{ %s }}' % (camelCase(attr), js_func_str))
+                '\n\t\t%s: %s' % (camelCase(attr), js_func_str))
         return ','.join(js_chart_args)
 
     def render(self):
