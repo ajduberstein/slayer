@@ -22,17 +22,23 @@ class Viewport(RenderMixin):
         self.pitch = pitch
         self.bearing = bearing
 
+    def to_json(self):
+        return {
+            "bearing": self.bearing,
+            "dragRotate": False,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "pitch": self.pitch,
+            "zoom": self.zoom,
+            "isSplit": False}
+
     def render(self):
         template = jinja2.Template('''
      var INITIAL_VIEWPORT_STATE = {
        latitude: {{ latitude }},
        longitude: {{ longitude }},
        zoom: {{ zoom }},
-       pitch: {{ pitch }}
+       pitch: {{ pitch }},
+       bearing: {{ bearing }}
      }''')
-        return template.render(
-            latitude=self.latitude,
-            longitude=self.longitude,
-            zoom=self.zoom,
-            pitch=self.pitch
-        )
+        return template.render(**self.to_json())
