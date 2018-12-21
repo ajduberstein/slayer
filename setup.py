@@ -49,13 +49,20 @@ else:
 
 packages = ['slayer']
 
-requires = [
+install_requires = [
     'chardet>=3.0.2,<3.1.0',
     'idna>=2.5,<2.8',
     'urllib3>=1.21.1,<1.24',
-    'certifi>=2017.4.17'
-]
-test_requirements = ['pytest-httpbin==0.0.7', 'pytest-cov', 'pytest-mock', 'pytest-xdist', 'PySocks>=1.5.6, !=1.5.7', 'pytest>=2.8.0']  # noqa
+    'certifi>=2017.4.17',
+    'camel_snake_kebab==0.3.2',
+    'jinja2']
+test_requirements = [
+    'pytest-httpbin==0.0.7',
+    'pytest-cov',
+    'pytest-mock',
+    'pytest-xdist',
+    'PySocks>=1.5.6,!=1.5.7',
+    'pytest>=2.8.0']
 
 with open('README.rst', 'r', 'utf-8') as f:
     readme = f.read()
@@ -76,7 +83,7 @@ setup(
     package_dir={'slayer': 'slayer'},
     include_package_data=True,
     python_requires=">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
-    install_requires=requires,
+    install_requires=install_requires,
     license='MIT',
     zip_safe=False,
     classifiers=(
