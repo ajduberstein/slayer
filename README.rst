@@ -37,6 +37,13 @@ Example usage
 ================
 
 .. code:: python
->>> data = [{'latitude': 1.1 + x, 'longitude': 0.2 + x, 'radius': 100000, 'color': [255, 165, 0]} for x in range(0, 1000000)]
->>> s = Slayer(Viewport(0, 0, zoom=10), mapbox_api_key='YOUR_API_KEY') + layers.Scatterplot(data)
+>>> import slayer as sly
+>>> # Plot 1 million points, to prove we can
+>>> data = [{
+...     'latitude': 1.1 + x,
+...     'longitude': 0.2 + x,
+...     'radius': 100000,
+...     'color': [255, 165, 0]
+... } for x in range(0, 1000000)]
+>>> s = sly.Slayer(sly.Viewport(0, 0, zoom=5)) + sly.layers.Scatterplot(data)
 >>> s.to_html(interactive=True)

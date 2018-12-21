@@ -6,7 +6,7 @@ import sys
 
 from codecs import open
 
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -47,8 +47,6 @@ if sys.version_info < (2, 7):
 else:
     PYOPENSSL_VERSION = 'pyOpenSSL >= 0.14'
 
-packages = ['slayer']
-
 install_requires = [
     'chardet>=3.0.2,<3.1.0',
     'idna>=2.5,<2.8',
@@ -74,16 +72,15 @@ with open('HISTORY.rst', 'r', 'utf-8') as f:
 setup(
     name='slayer',
     version='0.0.1',
-    description='Spatial plots in python',
+    description='Spatial plots in Python',
     long_description=readme + '\n\n' + history,
     long_description_content_type='text/x-rst',
     author='Andrew Duberstein',
     author_email='ajduberstein+slayer@gmail.com',
     url='https://github.com/ajduberstein/slayer',
-    packages=packages,
-    package_data={'': ['LICENSE', 'NOTICE'], 'slayer': ['*.pem']},
-    package_dir={'slayer': 'slayer'},
+    packages=find_packages(),
     include_package_data=True,
+    package_dir={'slayer': 'slayer'},
     python_requires=">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=install_requires,
     license='MIT',
