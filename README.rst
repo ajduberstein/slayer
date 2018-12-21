@@ -40,8 +40,8 @@ Example usage
 >>> import slayer as sly
 >>> # Plot 1 million points, to prove we can
 >>> data = [{
-...     'latitude': 1.1 + x,
-...     'longitude': 0.2 + x,
+...     'lat': 1.1 + x,
+...     'lng': 0.2 + x,
 ...     'radius': 100000,
 ...     'color': [255, 165, 0]
 ... } for x in range(0, 1000000)]
