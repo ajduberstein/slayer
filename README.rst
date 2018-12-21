@@ -36,6 +36,8 @@ slayer.py
 Example usage
 ================
 
+Get a Mapbox API key and set it as en environment variable or list it in your script:
+
 .. code:: python
 >>> import slayer as sly
 >>> # Plot 1 million points, to prove we can
@@ -45,5 +47,5 @@ Example usage
 ...     'radius': 100000,
 ...     'color': [255, 165, 0]
 ... } for x in range(0, 1000000)]
->>> s = sly.Slayer(sly.Viewport(0, 0, zoom=5)) + sly.layers.Scatterplot(data)
+>>> s = sly.Slayer(sly.Viewport(0, 0, zoom=5), mapbox_api_key='pk.YOUR_API_KEY') + sly.layers.Scatterplot(data)
 >>> s.to_html(interactive=True)
