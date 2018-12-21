@@ -36,7 +36,9 @@ slayer.py
 Example usage
 ================
 
-Get a Mapbox API key and set it as en environment variable or list it in your script:
+Get a `Mapbox API key`_ and set it as an environment variable (or list it in your script as below):
+
+.. _Mapbox API key: https://www.mapbox.com/help/how-access-tokens-work/#mapbox-tokens-api
 
 .. code:: python
 >>> import slayer as sly
