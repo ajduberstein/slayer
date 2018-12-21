@@ -55,7 +55,9 @@ install_requires = [
     'urllib3>=1.21.1,<1.24',
     'certifi>=2017.4.17',
     'camel_snake_kebab==0.3.2',
-    'jinja2']
+    'jiphy>=1.2.2',
+    'dill>=0.2.8.2',
+    'yapf>=0.25.0']
 test_requirements = [
     'pytest-httpbin==0.0.7',
     'pytest-cov',

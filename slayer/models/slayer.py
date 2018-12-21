@@ -1,10 +1,8 @@
 import os.path
 import jinja2
 
-from slimit.parser import Parser
-
-from .layer import Layer
-from .viewport import Viewport
+from layer import Layer
+from viewport import Viewport
 from ..io import display_html
 from ..string_utils import suppress_stderr
 
