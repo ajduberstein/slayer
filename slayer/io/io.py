@@ -72,3 +72,7 @@ def display_html(html_str):
         return
     else:
         return html_str
+
+
+def render_image(html_str):
+    pass
