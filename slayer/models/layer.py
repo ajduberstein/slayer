@@ -61,6 +61,7 @@ class Layer(RenderMixin):
         self.data = data
         self.get_color = make_js_get_color(color_field)
         class_name = self.__class__.__name__
+        # Layer name for deck.gl
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
         self.valid_layer_keywords = VALID_LAYER_KEYWORDS
         self.js_function_overrides = js_function_overrides
@@ -91,8 +92,7 @@ class Layer(RenderMixin):
 
     def render(self):
         template = jinja2.Template(
-          'new {{ layer_type }}({' +
-          self._join_attrs() + '})')
+            'new {{ layer_type }}({' + self._join_attrs() + '})')
         return template.render(**self.__dict__)
 
     def add_to(self, slayer):
