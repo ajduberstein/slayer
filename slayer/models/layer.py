@@ -63,7 +63,6 @@ class Layer(RenderMixin):
         class_name = self.__class__.__name__
         # Layer name for deck.gl
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
-        self.valid_layer_keywords = VALID_LAYER_KEYWORDS
         self.js_function_overrides = js_function_overrides
 
     def _join_attrs(self):
@@ -81,14 +80,14 @@ class Layer(RenderMixin):
         which will then be called by `render`
 
         """
-        js_chart_args = []
+        deckgl_chart_args = []
         for attr in self.__dict__.keys():
-            if attr not in self.valid_layer_keywords:
+            if attr not in VALID_LAYER_KEYWORDS:
                 continue
             js_func_str = self.js_function_overrides.get(attr) or '{{ %s }}' % attr
-            js_chart_args.append(
-                '\n\t\t%s: %s' % (camelCase(attr), js_func_str))
-        return ','.join(js_chart_args)
+            deckgl_chart_arg = '\n\t\t{named_arg}: {js_func}'.format(named_arg=camelCase(attr), js_func=js_func_str)
+            deckgl_chart_args.append(deckgl_chart_arg)
+        return ','.join(deckgl_chart_args)
 
     def render(self):
         template = jinja2.Template(
