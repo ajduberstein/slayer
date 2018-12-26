@@ -18,6 +18,8 @@ VALID_LAYER_KEYWORDS = {
     'get_radius',
     'get_start_position',
     'get_end_position',
+    'get_line_color',
+    'get_line_width',
     'highlight_color',
     'highlighted_object_index',
     'auto_highlight',
@@ -33,6 +35,7 @@ class Layer(RenderMixin):
         Args:
             data (:obj:`list` of :obj:`dict`): Data to be plotted, ideally as a Pandas DataFrame
             color_field (`str`): Column name that specifies an data entry's color
+            update_triggers (:obj:`dict` of :obj`(str, str)`): Dictionary specifying which functions to call
             js_function_overrides (:obj:`dict` of :obj`(str, str)`): Dictionary that allows the user to
                 specify JS functions for more control of behavior in deck.gl.
 
@@ -50,6 +53,7 @@ class Layer(RenderMixin):
         self,
         data,
         color_field='color',
+        update_triggers={},
         js_function_overrides={}
     ):
         super(Layer, self).__init__()
@@ -61,6 +65,9 @@ class Layer(RenderMixin):
         # Layer name for deck.gl
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
         self.js_function_overrides = js_function_overrides
+
+        if isinstance(update_triggers) == dict:
+            self.update_triggers = update_triggers
 
     def _join_attrs(self):
         """Joins valid object attributes to populate a DeckGL layer object's
