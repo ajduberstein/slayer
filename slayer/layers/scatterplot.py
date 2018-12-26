@@ -26,7 +26,7 @@ class Scatterplot(Layer):
         data,
         position_field=['lat', 'lng'],
         radius_field='radius',
-        radius_default=100,
+        radius_default=10,
         **kwargs
     ):
         super(Scatterplot, self).__init__(data, **kwargs)
