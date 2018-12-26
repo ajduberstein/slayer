@@ -1,1 +1,1 @@
-from io import io  # noqa
+from io import *  # noqa
