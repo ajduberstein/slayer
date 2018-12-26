@@ -3,10 +3,7 @@ import jinja2
 import pandas as pd
 
 from .base import RenderMixin
-from .get_functions import (
-    make_js_get_color,
-    make_js_get_position
-)
+from .get_functions import make_js_get_color
 
 VALID_LAYER_KEYWORDS = {
     'id',
