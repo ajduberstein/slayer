@@ -6,7 +6,7 @@ from ..models.get_functions import (
 
 
 class Scatterplot(Layer):
-    """Geographic scattersplot
+    """Geographic scatterplot
 
         Args:
             radius_field (float): Radius size of a point
