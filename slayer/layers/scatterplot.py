@@ -17,7 +17,8 @@ class Scatterplot(Layer):
                 provided, like `position_field='coordinates'`.
 
                 Position is specified in (x, y) coordinate pairs--that is,
-                lat-lon pairs should be listed as with longitude first, since longitude is the horizontal x value.
+                lat-lon pairs should be listed as with longitude first,
+                since longitude is the horizontal/x-axis value.
 
     """
 

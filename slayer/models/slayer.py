@@ -55,7 +55,7 @@ class Slayer(object):
         layers = [layer.render() for layer in self._layers]
         return ',\n'.join(layers)
 
-    def to_html(self, interactive=False, js_only=False, validate_js=False):
+    def to_html(self, interactive=True, js_only=False):
         """Converts all layers and viewport objects into HTML
 
         If interactive and in a CLI, attempts to open a web browser
@@ -66,8 +66,6 @@ class Slayer(object):
             interactive (bool): Should be True if running in iPython or Jupyter
             js_only (bool): Should be True if the user wants to return only the
                 compiled JS
-            validate_js (bool): Not yet implemented. Should be True if user wants to validate that
-                the JS rendered to the DOM is valid ES5 JavaScript.
 
         Returns:
             str: Rendered HTML
