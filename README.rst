@@ -22,7 +22,7 @@ Get a `Mapbox API key`_ and set it as an environment variable (or list it in you
 ...     'color': [255, 165, 0]
 >>> } for x in range(0, 1000000)]
 >>> s = sly.Slayer(sly.Viewport(0, 0, zoom=5), mapbox_api_key='pk.YOUR_API_KEY') + sly.layers.Scatterplot(data)
->>> s.to_html(interactive=True)
+>>> s.to_html()
 
 
 .. code:: python
@@ -36,4 +36,4 @@ Get a `Mapbox API key`_ and set it as an environment variable (or list it in you
 # TODO start from here
 >>> setColor(data['color'])
 >>> s = sly.Slayer(sly.Viewport(0, 0, zoom=5), mapbox_api_key='pk.YOUR_API_KEY') + sly.layers.Scatterplot(data)
->>> s.to_html(interactive=True)
+>>> s.to_html()
