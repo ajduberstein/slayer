@@ -66,7 +66,7 @@ class Layer(RenderMixin):
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
         self.js_function_overrides = js_function_overrides
 
-        if isinstance(update_triggers) == dict:
+        if isinstance(update_triggers, dict):
             self.update_triggers = update_triggers
 
     def _join_attrs(self):
