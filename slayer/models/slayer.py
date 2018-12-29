@@ -1,12 +1,9 @@
 import os.path
 import jinja2
 
-from slimit.parser import Parser
-
-from .layer import Layer
-from .viewport import Viewport
+from layer import Layer
+from viewport import Viewport
 from ..io import display_html
-from ..string_utils import suppress_stderr
 
 
 TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), '../templates/')
@@ -22,7 +19,8 @@ class Slayer(object):
         layers (:obj:`list` of :obj:`Layer`): Layers to be plotted on a map
         viewport (:obj:`slayer.Viewport`): Viewport that defines the angle at which the user
             observes the layers
-        mapbox_api_key (:obj:`str`, optional): Public API key from Mapbox
+        mapbox_api_key (:obj:`str`, optional): Public API key from Mapbox.
+            Can be passed as MAPBOX_API_KEY environment variable.
     """
 
     def __init__(
@@ -77,10 +75,10 @@ class Slayer(object):
         rendered_layers = self.compile_layers()
         rendered_viewport = self.viewport.render()
         js = j2_env.get_template('js.j2').render(
-                layers=rendered_layers,
-                viewport=rendered_viewport,
-                mapbox_api_key=self.mapbox_api_key,
-                interactive=interactive)
+            layers=rendered_layers,
+            viewport=rendered_viewport,
+            mapbox_api_key=self.mapbox_api_key,
+            interactive=interactive)
         if js_only:
             print(js)
             return js
@@ -90,21 +88,3 @@ class Slayer(object):
         if interactive:
             return display_html(html)
         return html
-
-
-def check_syntax(js_str):
-    """Checks for valid JS ES5 syntax
-
-        Throws an exception if the syntax is invalid
-
-        Exists to help catch errors before DOM rendering
-
-        Args:
-            js_str (str): String of JavaScript to check
-    """
-    try:
-        with suppress_stderr():
-            parser = Parser()
-            parser.parse(js_str)
-    except SyntaxError as e:
-        raise SyntaxError('User-provided JS is not valid ES5: %s' % e)

@@ -1,4 +1,2 @@
 jinja2
-camel_snake_kebab
-jiphy
-bencode
+camel_snake_kebab==0.3.2

@@ -16,7 +16,7 @@ class Scatterplot(Layer):
                 like `position_field=['lng', 'lat']`, otherwise a single string name should be
                 provided, like `position_field='coordinates'`.
 
-                Please be mindful that position is specified in (x, y) coordinate pairs--that is,
+                Position is specified in (x, y) coordinate pairs--that is,
                 lat-lon pairs should be listed as with longitude first, since longitude is the horizontal x value.
 
     """

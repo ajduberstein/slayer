@@ -1,0 +1,4 @@
+include README.rst
+include slayer/templates/*.j2
+include LICENSE
+include NOTICE
