@@ -28,7 +28,7 @@ def make_js_get_target_position(target_position_field_name):
     return _make_js_func_for(target_position_field_name)
 
 
-def make_js_get_color(color_field_name, color_scale_list=[], default_val=ORANGE_RGB):
+def make_js_get_color(color_field_name, default_val=ORANGE_RGB):
     return _make_js_func_for(color_field_name, 'str', default_val)
 
 
@@ -36,17 +36,19 @@ def make_js_get_radius(radius_field_name, default_val=100):
     return _make_js_func_for(radius_field_name, 'float', default_val)
 
 
-def make_js_conditional(breaks, color_scale):
+def _make_deckgl_conditional(breaks_color_map):
+    """Creates a JS conditional statement for use in deck.gl functions"""
     js_pieces = []
-    prev_break = breaks[0]
+    prev_break = breaks_color_map[0]
     js_conditional_template = 'else if ({lower_bound} <= x < {upper_bound})\n\t{\n\treturn {mapped_scale_value}}\n'
-    for current_break in breaks[1:]:
+    for current_break in breaks_color_map[1:]:
         if_statement = js_conditional_template.format(
             lower_bound=prev_break,
             upper_bound=current_break,
-            mapped_scale_value=mapped_scale_value)
+            mapped_scale_value=breaks_color_map)
         js_pieces.append(if_statement)
         pass
 
-def cut_first_else(string):
+
+def _cut_first_else(string):
     return string.replace('else', '').strip()
