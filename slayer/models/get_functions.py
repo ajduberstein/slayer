@@ -28,7 +28,7 @@ def make_js_get_target_position(target_position_field_name):
     return _make_js_func_for(target_position_field_name)
 
 
-def make_js_get_color(color_field_name, default_val=ORANGE_RGB):
+def make_js_get_color(color_field_name, color_scale_list=[], default_val=ORANGE_RGB):
     return _make_js_func_for(color_field_name, 'str', default_val)
 
 
