@@ -33,7 +33,6 @@ class Layer(RenderMixin):
 
         Args:
             data (:obj:`list` of :obj:`dict`): Data to be plotted, ideally as a Pandas DataFrame
-            color_field (`str`): Column name that specifies an data entry's color
             update_triggers (:obj:`dict` of :obj`(str, str)`): Dictionary specifying which functions to call
             js_function_overrides (:obj:`dict` of :obj`(str, str)`): Dictionary that allows the user to
                 specify JS functions for more control of behavior in deck.gl.
@@ -51,7 +50,6 @@ class Layer(RenderMixin):
     def __init__(
         self,
         data,
-        color_field=None,
         update_triggers={},
         js_function_overrides={}
     ):

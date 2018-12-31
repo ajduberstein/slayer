@@ -1,35 +1,19 @@
-from .models.color_scale import ColorScale
-ORANGE_RGB = [255, 127, 0]
+from color_scale import ColorScale
+
+
+CONST_TEMPLATE = 'function (x) { return %s }'
+STR_CONST_TEMPLATE = 'function (x) { return "%s" }'
+FIELD_TEMPLATE = 'function (x) { return x["%s"] }'
+CONDITIONAL_TEMPLATE = 'function (x) { %s }'
 
 
 def make_js_get_position(position_field_names):
     if len(position_field_names) == 2:
         return 'function (x) { return [x["%s"], x["%s"]] }' % (position_field_names[0], position_field_names[1])
-    return 'function (x) { return x["%s"] }'
+    return FIELD_TEMPLATE % position_field_names
 
 
-def _make_js_func_for(field_name, return_type, default_val=None):
-    if not default_val:
-        return 'function (x) { return x["%s"] }'
-    if return_type in ('str', 'list'):
-        return 'function (x) { return x["%s"] || %s }' % (field_name, str(default_val))
-    if return_type == 'float':
-        return 'function (x) { return x["%s"] || %f }' % (field_name, default_val)
-
-
-def get_stroke_width(stroke_width_field_name):
-    return _make_js_func_for(stroke_width_field_name, 'float')
-
-
-def make_js_get_source_position(source_position_field_name):
-    return _make_js_func_for(source_position_field_name)
-
-
-def make_js_get_target_position(target_position_field_name):
-    return _make_js_func_for(target_position_field_name)
-
-
-def make_js_get_color(color=ORANGE_RGB, color_scale_list=[]):
+def make_js_get_color(color):
     """Converts color field or value to JS string for processing in browser
 
         Arguments:
@@ -42,14 +26,20 @@ def make_js_get_color(color=ORANGE_RGB, color_scale_list=[]):
             str: Executable JavaScript meant for embedding in deck.gl object.
     """
     if isinstance(color, str) and color.startswith('#'):
-        return _make_js_func_for('color', 'str', default_val=color)
+        # Hex value
+        return CONST_TEMPLATE % color  # TODO convert to hex
+    if isinstance(color, str):
+        # Color field name
+        return FIELD_TEMPLATE % color
     if isinstance(color, list) and len(color) in (3, 4):
-        return _make_js_func_for('color', 'str', default_val=color)
+        # RGBA value
+        return CONST_TEMPLATE % color
     if isinstance(color, ColorScale):
+        lookup = color.get_gradient_lookup()
         conditional_str = _make_deckgl_conditional(
-            color.get_breaks(), color.get_gradient()
+            lookup.keys(), lookup.values(), color.variable_name
         )
-        return 'function (x) { %s }' % conditional_str
+        return CONDITIONAL_TEMPLATE % conditional_str
     # TODO support custom ranges
     # if isinstance(color, OrderedDict):
     # Also enable categorical colors
@@ -57,26 +47,26 @@ def make_js_get_color(color=ORANGE_RGB, color_scale_list=[]):
 
 
 def make_js_get_radius(radius_field_or_value):
-    if isinstance(radius_field_or_value, float):
-        return _make_js_func_for('radius', 'float', radius_field_or_value)
-    return _make_js_func_for(radius_field_or_value, 'float')
+    if isinstance(radius_field_or_value, float) or isinstance(radius_field_or_value, int):
+        return CONST_TEMPLATE % radius_field_or_value
+    if isinstance(radius_field_or_value, str):
+        return FIELD_TEMPLATE % radius_field_or_value
 
 
-def _make_deckgl_conditional(breaks_list, characteristic_list):
+def _make_deckgl_conditional(breaks_list, characteristic_list, attr_name):
     """Creates a JS conditional statement for use in deck.gl functions"""
     js_pieces = []
     prev_break = breaks_list[0]
     i = 1
-    js_conditional_template = 'else if ({lower_bound} <= x < {upper_bound})\n\t{\n\treturn {mapped_scale_value}}\n'
+    js_conditional_template = 'else if (%s <= x["%s"] && x["%s"] < %s)\n\t{\n\treturn %s}\n'
     for current_break in breaks_list[1:]:
-        if_statement = js_conditional_template.format(
-            lower_bound=prev_break,
-            upper_bound=current_break,
-            mapped_scale_value=characteristic_list[i])
+        if_statement = js_conditional_template % (
+            prev_break, attr_name, attr_name, current_break, characteristic_list[i])
         js_pieces.append(if_statement)
         i += 1
-    return _cut_first_else(js_conditional_template)
+        prev_break = current_break
+    return _cut_first_else('\n'.join(js_pieces))
 
 
 def _cut_first_else(string):
-    return string.replace('else', '').strip()
+    return string.replace('else', '', 1).strip()

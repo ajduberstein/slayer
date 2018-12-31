@@ -11,9 +11,6 @@ VALID_SCALES = [
 
 
 def calculate_breaks(data, scale_type, num_classes=5):
-    if scale_type not in VALID_SCALES:
-        raise ValueError('Choose a valid scale. Options are: %s' % VALID_SCALES)
-
     if scale_type == 'equal_interval':
         return calculate_equal_interval_breaks(data, num_classes)
     elif scale_type == 'quantile':
@@ -35,7 +32,7 @@ def calculate_percentile_breaks(data, num_classes=5):
     Returns:
         (`list of `float`): Sorted quantile values
     """
-    return [np.percentile(data, 100 * (x / num_classes)) for x in range(0, num_classes)]
+    return [np.percentile(data, 100 * (float(x) / num_classes)) for x in range(0, num_classes)]
 
 
 def calculate_equal_interval_breaks(data, num_classes=5):

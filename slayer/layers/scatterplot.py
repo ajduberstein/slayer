@@ -4,6 +4,10 @@ from ..models.get_functions import (
     make_js_get_position,
     make_js_get_radius
 )
+from ..models import ColorScale
+
+
+ORANGE_RGB = [255, 127, 0]
 
 
 class Scatterplot(Layer):
@@ -30,11 +34,13 @@ class Scatterplot(Layer):
         self,
         data,
         position=['lat', 'lng'],
-        radius=10,
-        color=None,
+        radius=100000.0,
+        color=ORANGE_RGB,
         **kwargs
     ):
         super(Scatterplot, self).__init__(data, **kwargs)
         self.get_position = make_js_get_position(position)
         self.get_radius = make_js_get_radius(radius)
-        self.get_color = make_js_get_color(color=color)
+        if isinstance(color, ColorScale):
+            color.set_data(self.data)
+        self.get_color = make_js_get_color(color)

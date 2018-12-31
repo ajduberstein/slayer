@@ -3,6 +3,7 @@ import jinja2
 
 from layer import Layer
 from viewport import Viewport
+from ..io import display_html
 
 
 TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), '../templates/')
@@ -54,7 +55,7 @@ class Slayer(object):
         layers = [layer.render() for layer in self._layers]
         return ',\n'.join(layers)
 
-    def to_html(self, js_only=False):
+    def to_html(self, interactive=False, js_only=False):
         """Converts all layers and viewport objects into HTML
 
         Args:
@@ -77,4 +78,6 @@ class Slayer(object):
         footer = j2_env.get_template('footer.j2').render()
         html = j2_env.get_template('body.j2').render(
             header=header, js=js, footer=footer)
+        if interactive:
+            return display_html(html)
         return html
