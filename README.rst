@@ -15,10 +15,11 @@ For example, to plot 1 million points with a red-to-purple color scale, you can 
 .. _Mapbox API key: https://www.mapbox.com/help/how-access-tokens-work/#mapbox-tokens-api
 
 .. code-block:: python
->>> from random import random
+>>> import slayer as sly
+>>> from random import uniform
 >>> data = [{
-...     'lat': 100*random(),
-...     'lng': 100*random(),
+...     'lat': 200*uniform(-1, 1),
+...     'lng': 200*uniform(-1, 1),
 >>> } for x in range(0, 1000000)]
 >>> s = sly.Slayer(sly.Viewport(0, 0, zoom=5), mapbox_api_key='pk.YOUR_API_KEY') +\
 ...     sly.Scatterplot(data, color=sly.ColorScale('lat', 'RdPu'))

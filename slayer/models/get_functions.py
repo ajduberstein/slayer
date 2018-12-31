@@ -36,7 +36,6 @@ def make_js_get_color(color):
         return CONST_TEMPLATE % color
     if isinstance(color, ColorScale):
         lookup = color.get_gradient_lookup()
-        print(lookup)
         conditional_str = _make_deckgl_conditional(
             lookup.keys(), lookup.values(), color.variable_name
         )
