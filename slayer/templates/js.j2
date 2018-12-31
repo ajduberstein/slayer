@@ -14,9 +14,5 @@ var deckgl = new deck.DeckGL({
 });
 
 function onViewportChange(viewport) {
-  {% if interactive %}
-    console.log('Viewport attributes')
-    console.log(JSON.stringify(viewport))
-  {% endif %}
   deckgl.setProps({viewState: viewport});
 }

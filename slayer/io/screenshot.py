@@ -1,3 +1,13 @@
+"""
+The goal of this module is to ease the creation of static maps
+from this package.
+
+Ideally, this is done headlessly (i.e., no running browser)
+and quickly. Given that deck.gl requires WebGL, there aren't
+lot of alternatives to using a browser.
+
+Not yet implemented.
+"""
 from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 
@@ -15,3 +25,10 @@ def make_screenshot(url, output):
     driver.get(url)
     driver.save_screenshot(output)
     driver.close()
+
+# This may be of interest
+# https://github.com/stackgl/headless-gl
+
+
+raise NotImplementedError(
+    'This part of the library is not complete')

@@ -17,9 +17,7 @@ def get_file_or_tempfile(fname=''):
 
 def in_ipynb():
     """Detects if package is running in iPython Notebook
-
     https://stackoverflow.com/questions/15411967/how-can-i-check-if-code-is-executed-in-the-ipython-notebook
-
     Returns:
         bool: True if in ipynb
     """
@@ -35,9 +33,7 @@ def in_ipynb():
 
 def is_interactive():
     """Detects if package is running interactively
-
     https://stackoverflow.com/questions/15411967/how-can-i-check-if-code-is-executed-in-the-ipython-notebook
-
     Returns:
         bool: True if session is interactive
     """
@@ -47,7 +43,6 @@ def is_interactive():
 
 def is_cli():
     """Detects if app is running in CLI (e.g., `ipython`, `python`)
-
     Returns:
         bool: True if session is interactive and on CLI
     """
@@ -56,7 +51,6 @@ def is_cli():
 
 def display_html(html_str):
     """Converts HTML into a temporary file and open it in the system browser
-
     Args:
         html_str (str): String of HTML to render
     """
@@ -72,7 +66,3 @@ def display_html(html_str):
         return
     else:
         return html_str
-
-
-def render_image(html_str):
-    pass

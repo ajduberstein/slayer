@@ -55,19 +55,12 @@ class Slayer(object):
         layers = [layer.render() for layer in self._layers]
         return ',\n'.join(layers)
 
-    def to_html(self, interactive=False, js_only=False, validate_js=False):
+    def to_html(self, interactive=False, js_only=False):
         """Converts all layers and viewport objects into HTML
 
-        If interactive and in a CLI, attempts to open a web browser
-
-        If interactive via an ipynb, emits results to the output cell
-
         Args:
-            interactive (bool): Should be True if running in iPython or Jupyter
             js_only (bool): Should be True if the user wants to return only the
                 compiled JS
-            validate_js (bool): Not yet implemented. Should be True if user wants to validate that
-                the JS rendered to the DOM is valid ES5 JavaScript.
 
         Returns:
             str: Rendered HTML
@@ -77,14 +70,14 @@ class Slayer(object):
         js = j2_env.get_template('js.j2').render(
             layers=rendered_layers,
             viewport=rendered_viewport,
-            mapbox_api_key=self.mapbox_api_key,
-            interactive=interactive)
+            mapbox_api_key=self.mapbox_api_key)
         if js_only:
             print(js)
             return js
         header = j2_env.get_template('header.j2').render()
         footer = j2_env.get_template('footer.j2').render()
-        html = j2_env.get_template('body.j2').render(header=header, js=js, footer=footer)
+        html = j2_env.get_template('body.j2').render(
+            header=header, js=js, footer=footer)
         if interactive:
             return display_html(html)
         return html
