@@ -3,7 +3,6 @@ import jinja2
 import pandas as pd
 
 from .base import RenderMixin
-from .get_functions import make_js_get_color
 
 VALID_LAYER_KEYWORDS = {
     'id',
@@ -52,7 +51,7 @@ class Layer(RenderMixin):
     def __init__(
         self,
         data,
-        color_field='color',
+        color_field=None,
         update_triggers={},
         js_function_overrides={}
     ):
@@ -60,7 +59,6 @@ class Layer(RenderMixin):
         if isinstance(data, pd.DataFrame):
             data = data.to_json(orient='records')
         self.data = data
-        self.get_color = make_js_get_color(color_field)
         class_name = self.__class__.__name__
         # Layer name for deck.gl
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'

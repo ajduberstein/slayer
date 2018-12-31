@@ -1,6 +1,28 @@
 import numpy as np
 
 
+VALID_SCALES = [
+    'equal_interval',
+    'quantile',
+    'jenks',
+    'categorical',
+    'categorical_random'
+]
+
+
+def calculate_breaks(data, scale_type, num_classes=5):
+    if scale_type not in VALID_SCALES:
+        raise ValueError('Choose a valid scale. Options are: %s' % VALID_SCALES)
+
+    if scale_type == 'equal_interval':
+        return calculate_equal_interval_breaks(data, num_classes)
+    elif scale_type == 'quantile':
+        return calculate_percentile_breaks(data, num_classes)
+    elif scale_type == 'jenks':
+        raise NotImplementedError()
+    return
+
+
 def calculate_percentile_breaks(data, num_classes=5):
     """Calculates the percentile cutoff lower bounds for a vector
 

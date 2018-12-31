@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Test Scale Calculations
+Test Data Break Calculations
 ------------
 """
-from slayer.scales import (
-    interpolate,
+from slayer.models.scales import (
     calculate_percentile_breaks,
-    calculate_equal_interval_breaks
+    calculate_equal_interval_breaks,
 )
-
-
-def test_interpolate():
-    assert interpolate([255, 0, 0], [128, 128, 128], 0.5) == [191.5, 64.0, 64.0]
 
 
 def test_calculate_percentile_breaks():

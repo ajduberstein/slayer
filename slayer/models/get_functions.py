@@ -1,3 +1,4 @@
+from .models.color_scale import ColorScale
 ORANGE_RGB = [255, 127, 0]
 
 
@@ -28,26 +29,53 @@ def make_js_get_target_position(target_position_field_name):
     return _make_js_func_for(target_position_field_name)
 
 
-def make_js_get_color(color_field_name, color_scale_list=[], default_val=ORANGE_RGB):
-    return _make_js_func_for(color_field_name, 'str', default_val)
+def make_js_get_color(color=ORANGE_RGB, color_scale_list=[]):
+    """Converts color field or value to JS string for processing in browser
+
+        Arguments:
+            color (`str`, `list` of `float`, or `slayer.ColorScale`): If string,
+                a hex value for the color all visualized items in the layer should have.
+                If a list, the same as previous, given as an RGB value in a list.
+                Otherwise a color scale.
+
+        Returns :
+            str: Executable JavaScript meant for embedding in deck.gl object.
+    """
+    if isinstance(color, str) and color.startswith('#'):
+        return _make_js_func_for('color', 'str', default_val=color)
+    if isinstance(color, list) and len(color) in (3, 4):
+        return _make_js_func_for('color', 'str', default_val=color)
+    if isinstance(color, ColorScale):
+        conditional_str = _make_deckgl_conditional(
+            color.get_breaks(), color.get_gradient()
+        )
+        return 'function (x) { %s }' % conditional_str
+    # TODO support custom ranges
+    # if isinstance(color, OrderedDict):
+    # Also enable categorical colors
+    # if isinstance(color, dict):
 
 
-def make_js_get_radius(radius_field_name, default_val=100):
-    return _make_js_func_for(radius_field_name, 'float', default_val)
+def make_js_get_radius(radius_field_or_value):
+    if isinstance(radius_field_or_value, float):
+        return _make_js_func_for('radius', 'float', radius_field_or_value)
+    return _make_js_func_for(radius_field_or_value, 'float')
 
 
-def _make_deckgl_conditional(breaks_color_map):
+def _make_deckgl_conditional(breaks_list, characteristic_list):
     """Creates a JS conditional statement for use in deck.gl functions"""
     js_pieces = []
-    prev_break = breaks_color_map[0]
+    prev_break = breaks_list[0]
+    i = 1
     js_conditional_template = 'else if ({lower_bound} <= x < {upper_bound})\n\t{\n\treturn {mapped_scale_value}}\n'
-    for current_break in breaks_color_map[1:]:
+    for current_break in breaks_list[1:]:
         if_statement = js_conditional_template.format(
             lower_bound=prev_break,
             upper_bound=current_break,
-            mapped_scale_value=breaks_color_map)
+            mapped_scale_value=characteristic_list[i])
         js_pieces.append(if_statement)
-        pass
+        i += 1
+    return _cut_first_else(js_conditional_template)
 
 
 def _cut_first_else(string):

@@ -1,7 +1,15 @@
-"""
-Selection of colors from http://colorbrewer2.org/
-"""
-SEQUENTIAL_SCALES = {
+import numpy as np
+
+
+def get_random_rgb():
+    return [round(np.random.random()*255) for _ in range(0, 3)]
+
+
+DEFAULT_PALETTES = {
+    """
+    Selection of colors from http://colorbrewer2.org/
+    """
+    # sequential scales
     'BuGr': [[229, 245, 249], [44, 162, 95]],
     'BuPu': [[224, 236, 244], [136, 86, 167]],
     'GnBu': [[224, 243, 219], [67, 162, 202]],
@@ -19,17 +27,13 @@ SEQUENTIAL_SCALES = {
     'Greys': [[240, 240, 240], [99, 99, 99]],
     'Oranges': [[254, 230, 206], [230, 85, 13]],
     'Purples': [[239, 237, 245], [117, 107, 177]],
-    'Reds': [[254, 224, 210], [222, 45, 38]]
-}
-
-DIVERGING_SCALES = {
+    'Reds': [[254, 224, 210], [222, 45, 38]],
+    # diverging scales
     'BrBG': [[216, 179, 101], [245, 245, 245], [90, 180, 172]],
     'PiYG': [[233, 163, 201], [247, 247, 247], [161, 215, 106]],
     'PRGn': [[175, 141, 195], [247, 247, 247], [127, 191, 123]],
-    'RdYlBu': [[252, 141, 89], [255, 255, 191], [145, 191, 219]]
-}
-
-QUALITATIVE_SCALES = {
+    'RdYlBu': [[252, 141, 89], [255, 255, 191], [145, 191, 219]],
+    # qualitative scales
     'accent': [
         [127, 201, 127],
         [190, 174, 212],
