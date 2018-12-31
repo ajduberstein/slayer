@@ -36,6 +36,7 @@ def make_js_get_color(color):
         return CONST_TEMPLATE % color
     if isinstance(color, ColorScale):
         lookup = color.get_gradient_lookup()
+        print(lookup)
         conditional_str = _make_deckgl_conditional(
             lookup.keys(), lookup.values(), color.variable_name
         )
@@ -53,18 +54,27 @@ def make_js_get_radius(radius_field_or_value):
         return FIELD_TEMPLATE % radius_field_or_value
 
 
+def safe_get(arr, idx, default=None):
+    try:
+        return arr[idx]
+    except IndexError:
+        return default
+
+
 def _make_deckgl_conditional(breaks_list, characteristic_list, attr_name):
     """Creates a JS conditional statement for use in deck.gl functions"""
     js_pieces = []
-    prev_break = breaks_list[0]
-    i = 1
     js_conditional_template = 'else if (%s <= x["%s"] && x["%s"] < %s)\n\t{\n\treturn %s}\n'
-    for current_break in breaks_list[1:]:
+    i = 0
+    while i < len(breaks_list):
         if_statement = js_conditional_template % (
-            prev_break, attr_name, attr_name, current_break, characteristic_list[i])
+            breaks_list[i],
+            attr_name,
+            attr_name,
+            safe_get(breaks_list, i + 1, 'Infinity'),
+            characteristic_list[i])
         js_pieces.append(if_statement)
         i += 1
-        prev_break = current_break
     return _cut_first_else('\n'.join(js_pieces))
 
 
