@@ -64,6 +64,5 @@ def test_func_to_str():
 
 
 def test_str_to_js():
-    print func_converter.str_to_js(CORRECT_MULTILINE)
     expected = "function switchy_mcswitchstatement(x) {\n    if (x == 1) {\n        return 'h';\n    } else if (x == 2) {\n        return 'e';\n    } else {\n        return 'y';\n\n    }\n}"  # noqa
     assert expected == func_converter.str_to_js(CORRECT_MULTILINE)
