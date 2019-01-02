@@ -22,13 +22,15 @@ def in_ipynb():
         bool: True if in ipynb
     """
     try:
-        cfg = get_ipython().config
-        if cfg['IPKernelApp']['parent_appname'] == 'ipython-notebook':
-            return True
+        shell = get_ipython().__class__.__name__
+        if shell == 'ZMQInteractiveShell':
+            return True   # Jupyter notebook or qtconsole
+        elif shell == 'TerminalInteractiveShell':
+            return False  # Terminal running IPython
         else:
-            return False
+            return False  # Other type (?)
     except NameError:
-        return False
+        return False      # Probably standard Python interpreter
 
 
 def is_interactive():
@@ -62,7 +64,24 @@ def display_html(html_str):
         webbrowser.open(url)
         return
     elif in_ipynb():
-        display(HTML(html_str))
+        ipynb_imports(html_str)
         return
     else:
         return html_str
+
+
+def ipynb_imports(html):
+    display(HTML(
+        '''
+        <script type="text/javascript">
+        require.config({
+          paths: {
+            "deck.gl": "https://unpkg.com/deck.gl@latest/deckgl.min.js",
+            "mapbox-gl": "https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js"
+          }
+        });
+        require(["d3", "topojson", "cloud"], function(d3, topojson, cloud){
+            window["deck"] = d3;
+        });
+        </script>
+        '''))
