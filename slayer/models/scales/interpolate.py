@@ -34,7 +34,7 @@ def interpolate(rgb_list, percent_blend):
         return _interpolate(rgb_list[0], rgb_list[1], percent_blend)
     elif len(rgb_list) == 3:
         if percent_blend < 0.5:
-            return _interpolate(rgb_list[0], rgb_list[1], percent_blend / 2.0)
+            return _interpolate(rgb_list[0], rgb_list[1], percent_blend * 2)
         else:
-            return _interpolate(rgb_list[1], rgb_list[2], percent_blend / 2.0)
+            return _interpolate(rgb_list[1], rgb_list[2], percent_blend / 1.5)
     return

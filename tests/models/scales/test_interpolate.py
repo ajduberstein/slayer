@@ -3,7 +3,7 @@
 Test Scale Calculations
 ------------
 """
-from slayer.models.scales import (
+from slayer.models.scales.interpolate import (
     _interpolate,
     interpolate
 )
@@ -14,5 +14,6 @@ def test__interpolate():
 
 
 def test_interpolate():
-    assert interpolate(
-        [[255, 0, 0], [128, 128, 128], [128, 128, 256]], 0.25) == [191.5, 64.0, 64.0]
+    actual = interpolate(
+        [[255, 0, 0], [128, 128, 128], [128, 128, 256]], 0.25)
+    assert actual == [191.5, 64.0, 64.0]
