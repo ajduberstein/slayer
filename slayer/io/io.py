@@ -71,6 +71,7 @@ def display_html(html_str):
 
 
 def ipynb_imports(html):
+    # TODO support lazy loading of libraries
     display(HTML(
         '''
         <script type="text/javascript">
