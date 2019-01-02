@@ -4,3 +4,4 @@ pytest
 ipdb
 ipython
 slimit
+yapf>=0.22.0
