@@ -58,7 +58,7 @@ def is_cli():
     return not in_ipynb() and is_interactive()
 
 
-def display_html(html_str):
+def display_html(html_str, filename=''):
     """Converts HTML into a temporary file and open it in the system browser
     Args:
         html_str (str): String of HTML to render
@@ -72,11 +72,24 @@ def display_html(html_str):
                 webbrowser.open(url)
     elif in_ipynb():
             cwd = os.getcwd()
-            with tempfile.NamedTemporaryFile(
-                    suffix='.html', prefix='slayer_', dir=cwd, delete=False) as f:
-                path = f.name
+            f = None
+            if filename is None:
+                f = tempfile.NamedTemporaryFile(suffix='.html', prefix='slayer_', dir=cwd, delete=False)
+            else:
+                path = os.path.join(cwd, make_html_file(filename))
+                f = open(path, 'w+')
+            try:
                 f.write(html_str)
                 local_name = f.name.split('/')[-1]
-                return IFrame(local_name, height=500, width=800)
+                return IFrame(local_name, height=500, width=500)
+            finally:
+                if f is not None:
+                    f.close()
     else:
         return html_str
+
+
+def make_html_file(fname):
+    if fname.endswith('.html') or fname.endswith('.htm'):
+        return fname
+    return fname + '.html'
