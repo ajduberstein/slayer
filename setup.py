@@ -59,6 +59,8 @@ install_requires = [
 test_requirements = [
     'pytest-httpbin==0.0.7',
     'pytest-cov',
+    'slimit>=0.8.1',
+    'yapf>=0.22.0',
     'pytest-mock',
     'pytest-xdist',
     'PySocks>=1.5.6,!=1.5.7',

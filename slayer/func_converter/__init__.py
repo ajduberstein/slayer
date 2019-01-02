@@ -1,1 +1,1 @@
-from func_converter import *  # noqa
+from .func_converter import *  # noqa

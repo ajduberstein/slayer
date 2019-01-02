@@ -1,1 +1,1 @@
-from scatterplot import Scatterplot  # noqa
+from .scatterplot import Scatterplot  # noqa

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from camel_snake_kebab import camelCase
 import jinja2
 import pandas as pd

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 def _interpolate(start_rgb, end_rgb, percent_blend):
     """Interpolates an RGB value a specific percentage between two values
 

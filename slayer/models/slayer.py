@@ -1,8 +1,10 @@
+from __future__ import absolute_import
+
 import os.path
 import jinja2
 
-from layer import Layer
-from viewport import Viewport
+from .layer import Layer
+from .viewport import Viewport
 from ..io import display_html
 
 

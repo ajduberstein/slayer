@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from ..models import Layer
 from ..models.get_functions import (
     make_js_get_color,

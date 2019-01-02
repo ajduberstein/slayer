@@ -1,4 +1,4 @@
-from color_scale import ColorScale
+from .color_scale import ColorScale
 
 
 CONST_TEMPLATE = 'function (x) { return %s }'
@@ -65,6 +65,8 @@ def _make_deckgl_conditional(breaks_list, characteristic_list, attr_name):
     """Creates a JS conditional statement for use in deck.gl functions"""
     js_pieces = []
     js_conditional_template = 'else if (%s <= x["%s"] && x["%s"] < %s)\n\t{\n\treturn %s}\n'
+    characteristic_list = list(characteristic_list)
+    breaks_list = list(breaks_list)
     i = 0
     while i < len(breaks_list):
         if_statement = js_conditional_template % (

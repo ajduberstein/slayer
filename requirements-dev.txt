@@ -1,4 +1,2 @@
-flake8
-pytest
 slimit>=0.8.1
 yapf>=0.22.0

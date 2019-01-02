@@ -34,8 +34,8 @@ def test_numerical_color_scale():
         [155.0, 211.8, 187.4],
         [118.0, 195.2, 156.60000000000002],
         [81.0, 178.6, 125.8]]
-    assert EXPECTATION_KEYS == gradient.keys()
-    assert EXPECTATION_VALUES == gradient.values()
+    assert EXPECTATION_KEYS == list(gradient.keys())
+    assert EXPECTATION_VALUES == list(gradient.values())
 
 
 def test_categorical_color_scale():
@@ -60,5 +60,5 @@ def test_categorical_color_scale():
         ('search', [252, 141, 98]),
         ('sign_up', [141, 160, 203]),
     ])
-    assert expectation.keys() == gradient.keys()
-    assert expectation.values() == gradient.values()
+    assert list(expectation.keys()) == list(gradient.keys())
+    assert list(expectation.values()) == list(gradient.values())
