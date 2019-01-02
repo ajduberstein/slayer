@@ -85,6 +85,7 @@ setup(
     package_dir={'slayer': 'slayer'},
     python_requires=">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=install_requires,
+    exclude_package_data=find_packages(exclude=['examples']),
     license='MIT',
     zip_safe=False,
     classifiers=(
