@@ -74,7 +74,6 @@ class Slayer(object):
             viewport=rendered_viewport,
             mapbox_api_key=self.mapbox_api_key)
         if js_only:
-            print(js)
             return js
         header = j2_env.get_template('header.j2').render()
         footer = j2_env.get_template('footer.j2').render()

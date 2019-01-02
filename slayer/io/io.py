@@ -2,9 +2,16 @@ from __future__ import print_function
 
 import os
 import os.path
+import jinja2
 import tempfile
 import webbrowser
-from IPython.core.display import display, HTML
+
+from IPython.display import IFrame
+
+
+TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), '../templates/')
+j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATES_PATH),
+                            trim_blocks=True)
 
 
 def get_file_or_tempfile(fname=''):
@@ -59,30 +66,17 @@ def display_html(html_str):
     if is_cli():
         with tempfile.NamedTemporaryFile(suffix='.html', delete=False) as f:
             path = f.name
-            url = 'file://' + path
+            url = path
             f.write(html_str)
-        webbrowser.open(url)
-        return
+            if not in_ipynb:
+                webbrowser.open(url)
     elif in_ipynb():
-        ipynb_imports(html_str)
-        return
+            cwd = os.getcwd()
+            with tempfile.NamedTemporaryFile(
+                    suffix='.html', prefix='slayer_', dir=cwd, delete=False) as f:
+                path = f.name
+                f.write(html_str)
+                local_name = f.name.split('/')[-1]
+                return IFrame(local_name, height=500, width=800)
     else:
         return html_str
-
-
-def ipynb_imports(html):
-    # TODO support lazy loading of libraries
-    display(HTML(
-        '''
-        <script type="text/javascript">
-        require.config({
-          paths: {
-            "deck.gl": "https://unpkg.com/deck.gl@latest/deckgl.min.js",
-            "mapbox-gl": "https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js"
-          }
-        });
-        require(["d3", "topojson", "cloud"], function(d3, topojson, cloud){
-            window["deck"] = d3;
-        });
-        </script>
-        '''))
