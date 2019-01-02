@@ -1,5 +1,9 @@
-slayer.py
+slayer.py 
 ================
+
+.. image:: https://travis-ci.com/ajduberstein/slayer.svg?branch=master
+    :target: https://travis-ci.com/ajduberstein/slayer
+
 
 Short for "Spatial Layers," `Slayer` is a Python wrapper around `deck.gl`_.
 
