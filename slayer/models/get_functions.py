@@ -8,9 +8,10 @@ CONDITIONAL_TEMPLATE = 'function (x) { %s }'
 
 
 def make_js_get_position(position_field_names):
-    if len(position_field_names) == 2:
+    if len(position_field_names) == 2 and isinstance(position_field_names, list):
         return 'function (x) { return [x["%s"], x["%s"]] }' % (position_field_names[0], position_field_names[1])
-    return FIELD_TEMPLATE % position_field_names
+    elif isinstance(position_field_names, str):
+        return FIELD_TEMPLATE % position_field_names
 
 
 def make_js_get_color(color):
@@ -53,7 +54,7 @@ def make_js_get_radius(radius_field_or_value):
         return FIELD_TEMPLATE % radius_field_or_value
 
 
-def safe_get(arr, idx, default=None):
+def _safe_get(arr, idx, default=None):
     try:
         return arr[idx]
     except IndexError:
@@ -70,7 +71,7 @@ def _make_deckgl_conditional(breaks_list, characteristic_list, attr_name):
             breaks_list[i],
             attr_name,
             attr_name,
-            safe_get(breaks_list, i + 1, 'Infinity'),
+            _safe_get(breaks_list, i + 1, 'Infinity'),
             characteristic_list[i])
         js_pieces.append(if_statement)
         i += 1

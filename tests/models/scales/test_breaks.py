@@ -3,7 +3,7 @@
 Test Data Break Calculations
 ------------
 """
-from slayer.models.scales import (
+from slayer.models.scales.breaks import (
     calculate_percentile_breaks,
     calculate_equal_interval_breaks,
 )
