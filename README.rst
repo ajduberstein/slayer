@@ -1,7 +1,7 @@
 slayer.py
 ================
 
-`Slayer` is a Python wrapper around `deck.gl`_.
+Short for "Spatial Layers," `Slayer` is a Python wrapper around `deck.gl`_.
 
 .. _deck.gl: http://deck.gl/#/
 
