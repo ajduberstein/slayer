@@ -57,7 +57,7 @@ class Slayer(object):
         layers = [layer.render() for layer in self._layers]
         return ',\n'.join(layers)
 
-    def to_html(self, interactive=False, js_only=False):
+    def to_html(self, filename='', interactive=False, js_only=False):
         """Converts all layers and viewport objects into HTML
 
         Args:
@@ -74,12 +74,14 @@ class Slayer(object):
             viewport=rendered_viewport,
             mapbox_api_key=self.mapbox_api_key)
         if js_only:
-            print(js)
             return js
         header = j2_env.get_template('header.j2').render()
         footer = j2_env.get_template('footer.j2').render()
         html = j2_env.get_template('body.j2').render(
             header=header, js=js, footer=footer)
         if interactive:
-            return display_html(html)
-        return html
+            return display_html(html, filename=filename)
+        if filename is None:
+            return html
+        with open(filename, 'w+') as f:
+            f.write(filename)
