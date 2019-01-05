@@ -35,7 +35,6 @@ class Layer(RenderMixin):
 
         Args:
             data (:obj:`list` of :obj:`dict`): Data to be plotted, ideally as a Pandas DataFrame
-            update_triggers (:obj:`dict` of :obj`(str, str)`): Dictionary specifying which functions to call
             js_function_overrides (:obj:`dict` of :obj`(str, str)`): Dictionary that allows the user to
                 specify JS functions for more control of behavior in deck.gl.
 
@@ -52,7 +51,7 @@ class Layer(RenderMixin):
     def __init__(
         self,
         data,
-        update_triggers={},
+        time_field=None,
         js_function_overrides={}
     ):
         super(Layer, self).__init__()
@@ -64,8 +63,8 @@ class Layer(RenderMixin):
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
         self.js_function_overrides = js_function_overrides
 
-        if isinstance(update_triggers, dict):
-            self.update_triggers = update_triggers
+        if time_field is not None:
+            self.update_triggers = {'getColor': [time_field]}
 
     def _join_attrs(self):
         """Joins valid object attributes to populate a DeckGL layer object's

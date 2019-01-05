@@ -63,33 +63,44 @@ def display_html(html_str, filename=''):
     Args:
         html_str (str): String of HTML to render
     """
-    if is_cli():
-        with tempfile.NamedTemporaryFile(suffix='.html', delete=False) as f:
-            path = f.name
-            url = path
-            f.write(html_str)
-            if not in_ipynb:
-                webbrowser.open(url)
-    elif in_ipynb():
-            cwd = os.getcwd()
-            f = None
-            if filename is None:
-                f = tempfile.NamedTemporaryFile(suffix='.html', prefix='slayer_', dir=cwd, delete=False)
-            else:
-                path = os.path.join(cwd, make_html_file(filename))
-                f = open(path, 'w+')
-            try:
-                f.write(html_str)
-                local_name = f.name.split('/')[-1]
-                return IFrame(local_name, height=500, width=500)
-            finally:
-                if f is not None:
-                    f.close()
+    cwd = os.getcwd() if in_ipynb() or is_cli() else None
+    f = get_file(filename, cwd)
+    try:
+        f.write(html_str)
+        if is_cli() and filename is None:
+                path = f.name
+                url = path
+                if not in_ipynb:
+                    webbrowser.open(url)
+        elif in_ipynb():
+            local_name = f.name.split('/')[-1]
+            return IFrame(local_name, height=500, width=500)
+        else:
+            return html_str
+    except Exception as e:
+        raise(e)
+    finally:
+        if f is not None:
+            f.close()
+
+
+def get_file(filename, dir=None):
+    f = None
+    # Temporary file in cwd, usually
+    if filename is None and dir is not None:
+        f = tempfile.NamedTemporaryFile(suffix='.html', prefix='slayer_', dir=dir, delete=False)
+    # Temporary file
+    elif filename is None and dir is None:
+        f = tempfile.NamedTemporaryFile(suffix='.html', prefix='slayer_', delete=False)
     else:
-        return html_str
+        path = os.path.join(dir, add_html_extension(filename)) if dir else add_html_extension(filename)
+        f = open(path, 'w+')
+    return f
 
 
-def make_html_file(fname):
+def add_html_extension(fname):
     if fname.endswith('.html') or fname.endswith('.htm'):
         return fname
+    if fname is None:
+        raise Exception("File has no name")
     return fname + '.html'

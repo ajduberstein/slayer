@@ -13,6 +13,11 @@ var deckgl = new deck.DeckGL({
   layers: layers
 });
 
+{% if add_timer %}
+  {% include 'timer.j2' %}
+{% endif %}
+
+
 function onViewportChange(viewport) {
   deckgl.setProps({viewState: viewport});
 }
