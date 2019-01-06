@@ -1,7 +1,11 @@
-var currentTime = 0;
+var timeFilter = {{min_time}};
 
 function repeatFunc() {
-    currentTime += 1;
+    timeFilter += 1;
+    if (timeFilter > {{max_time}}) {
+        timeFilter = {{min_time}};
+    }
+    layers = getLayers()
 }
 
-setInterval(repeatFunc, {{cadence}}):
+setInterval(repeatFunc, {{cadence or 500}});

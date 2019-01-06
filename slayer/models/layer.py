@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+import json
+
 from camel_snake_kebab import camelCase
 import jinja2
 import pandas as pd
@@ -64,7 +66,15 @@ class Layer(RenderMixin):
         self.js_function_overrides = js_function_overrides
 
         if time_field is not None:
-            self.update_triggers = {'getColor': [time_field]}
+            times = []
+            try:
+                times = [d[time_field] for d in json.loads(self.data)]
+            except KeyError:
+                raise Exception("Data does not have a time field named `%s`" % time_field)
+            self.update_triggers = "{getColor: [timeFilter]}"
+            self.time_field = time_field
+            self.min_time = min(times)
+            self.max_time = max(times)
 
     def _join_attrs(self):
         """Joins valid object attributes to populate a DeckGL layer object's

@@ -1,24 +1,31 @@
 from .color_scale import ColorScale
 
 
-CONST_TEMPLATE = 'function (x) { return %s }'
-STR_CONST_TEMPLATE = 'function (x) { return "%s" }'
-FIELD_TEMPLATE = 'function (x) { return x["%s"] }'
-CONDITIONAL_TEMPLATE = 'function (x) { %s }'
+# TODO Handle with Jinja instead
+CONST_TEMPLATE = 'return %s;'
+STR_CONST_TEMPLATE = 'return "%s";'
+FIELD_TEMPLATE = 'return x["%s"];'
+CONDITIONAL_TEMPLATE = '%s;'
 
 
+def wrap_js_func(func):
+    def wrapper(*args, **kwargs):
+        return 'function (x) { %s }' % func(*args, **kwargs)
+    return wrapper
+
+@wrap_js_func
 def make_js_get_position(position_field_names):
     if len(position_field_names) == 2 and isinstance(position_field_names, list):
-        return 'function (x) { return [x["%s"], x["%s"]] }' % (position_field_names[0], position_field_names[1])
+        return 'return [x["%s"], x["%s"]]' % (position_field_names[0], position_field_names[1])
     elif isinstance(position_field_names, str):
         return FIELD_TEMPLATE % position_field_names
 
 
-def make_js_get_color(color):
+@wrap_js_func
+def make_js_get_color(color, time_field=None):
     """Converts color field or value to JS string for processing in browser
 
-        Arguments:
-            color (`str`, `list` of `float`, or `slayer.ColorScale`): If string,
+        Arguments: color (`str`, `list` of `float`, or `slayer.ColorScale`): If string,
                 a hex value for the color all visualized items in the layer should have.
                 If a list, the same as previous, given as an RGB value in a list.
                 Otherwise a color scale.
@@ -26,27 +33,39 @@ def make_js_get_color(color):
         Returns :
             str: Executable JavaScript meant for embedding in deck.gl object.
     """
+    func_pieces = []
+    if time_field:
+        js_filter = ('if (timeFilter > x["%s"]) {'
+                     '    return [0, 0, 0, 0];'
+                     '}')
+        js_filter = js_filter % (time_field)
+        func_pieces.append(js_filter)
+
     if isinstance(color, str) and color.startswith('#'):
         # Hex value
-        return CONST_TEMPLATE % color  # TODO convert to hex
-    if isinstance(color, str):
+        # TODO convert to hex
+        func_pieces.append(CONST_TEMPLATE % color)
+    elif isinstance(color, str):
         # Color field name
-        return FIELD_TEMPLATE % color
-    if isinstance(color, list) and len(color) in (3, 4):
+        func_pieces.append(FIELD_TEMPLATE % color)
+    elif isinstance(color, list) and len(color) in (3, 4):
         # RGBA value
-        return CONST_TEMPLATE % color
-    if isinstance(color, ColorScale):
+        func_pieces.append(CONST_TEMPLATE % color)
+    elif isinstance(color, ColorScale):
         lookup = color.get_gradient_lookup()
         conditional_str = _make_deckgl_conditional(
             lookup.keys(), lookup.values(), color.variable_name
         )
-        return CONDITIONAL_TEMPLATE % conditional_str
+        func_pieces.append(CONDITIONAL_TEMPLATE % conditional_str)
+    func = '\n'.join(func_pieces)
+    return func
     # TODO support custom ranges
     # if isinstance(color, OrderedDict):
     # Also enable categorical colors
     # if isinstance(color, dict):
 
 
+@wrap_js_func
 def make_js_get_radius(radius_field_or_value):
     if isinstance(radius_field_or_value, float) or isinstance(radius_field_or_value, int):
         return CONST_TEMPLATE % radius_field_or_value

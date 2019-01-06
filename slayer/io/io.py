@@ -58,21 +58,24 @@ def is_cli():
     return not in_ipynb() and is_interactive()
 
 
-def display_html(html_str, filename=''):
+def display_html(html_str, filename=None):
     """Converts HTML into a temporary file and open it in the system browser
+        or IPython/Jupyter Notebook IFrame.
+
     Args:
         html_str (str): String of HTML to render
+        filename (str): Local name of file
     """
-    cwd = os.getcwd() if in_ipynb() or is_cli() else None
-    f = get_file(filename, cwd)
+    f = None
     try:
-        f.write(html_str)
-        if is_cli() and filename is None:
-                path = f.name
-                url = path
-                if not in_ipynb:
-                    webbrowser.open(url)
+        if is_cli():
+            f = open_named_or_temporary_file(filename)
+            f.write(html_str)
+            path = os.path.realpath(f.name)
+            url = 'file://{}'.format(path)
+            webbrowser.open(url)
         elif in_ipynb():
+            f = open_named_or_temporary_file(filename=filename, dir=os.getcwd())
             local_name = f.name.split('/')[-1]
             return IFrame(local_name, height=500, width=500)
         else:
@@ -84,18 +87,15 @@ def display_html(html_str, filename=''):
             f.close()
 
 
-def get_file(filename, dir=None):
-    f = None
-    # Temporary file in cwd, usually
-    if filename is None and dir is not None:
-        f = tempfile.NamedTemporaryFile(suffix='.html', prefix='slayer_', dir=dir, delete=False)
-    # Temporary file
-    elif filename is None and dir is None:
-        f = tempfile.NamedTemporaryFile(suffix='.html', prefix='slayer_', delete=False)
-    else:
-        path = os.path.join(dir, add_html_extension(filename)) if dir else add_html_extension(filename)
-        f = open(path, 'w+')
-    return f
+def open_named_or_temporary_file(filename='', dir=''):
+    if filename:
+        filename = add_html_extension(filename)
+        return open(filename, 'w+')
+    if dir:
+        return tempfile.NamedTemporaryFile(
+            suffix='.html', dir=dir, delete=False)
+    return tempfile.NamedTemporaryFile(
+        suffix='.html', delete=False)
 
 
 def add_html_extension(fname):

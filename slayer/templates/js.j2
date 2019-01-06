@@ -1,8 +1,12 @@
 {{ viewport }};
 
-var layers = [
-  {{ layers }}
-];
+var layers = []
+
+function getLayers() {
+  return [
+    {{ layers }}
+  ];
+}
 
 var deckgl = new deck.DeckGL({
   container: 'container',
@@ -12,10 +16,6 @@ var deckgl = new deck.DeckGL({
   onViewportChange: onViewportChange,
   layers: layers
 });
-
-{% if add_timer %}
-  {% include 'timer.j2' %}
-{% endif %}
 
 
 function onViewportChange(viewport) {
