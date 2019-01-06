@@ -1,0 +1,17 @@
+function addDatetimeLabel(datetime) {
+    var h = document.createElement("div");
+    h.style.cssText = "position:absolute;left:10px;top:10px;"
+    var t = document.createTextNode("" + datetime);
+    h.appendChild(t);
+    h.id = 'datetimeLabel';
+    document.getElementById("labels").appendChild(t);
+}
+
+function setDatetime(datetime) {
+  var label = document.getElementById("datetimeLabel")
+  if (label) {
+    label.innerHTML = datetime;
+  } else {
+    addDatetimeLabel(datetime);
+  }
+}

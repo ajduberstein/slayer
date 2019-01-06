@@ -5,7 +5,9 @@ function repeatFunc() {
     if (timeFilter > {{max_time}}) {
         timeFilter = {{min_time}};
     }
-    layers = getLayers()
+    layers = getLayers();
+    deckgl.setProps({layers});
+    setDatetime(timeFilter);
 }
 
-setInterval(repeatFunc, {{cadence or 500}});
+setInterval(repeatFunc, {{cadence or 250}});

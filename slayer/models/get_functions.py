@@ -35,7 +35,7 @@ def make_js_get_color(color, time_field=None):
     """
     func_pieces = []
     if time_field:
-        js_filter = ('if (timeFilter > x["%s"]) {'
+        js_filter = ('if (x["%s"] > timeFilter) {'
                      '    return [0, 0, 0, 0];'
                      '}')
         js_filter = js_filter % (time_field)
