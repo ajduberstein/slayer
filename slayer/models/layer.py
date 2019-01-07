@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+import json
+
 from camel_snake_kebab import camelCase
 import jinja2
 import pandas as pd
@@ -35,7 +37,6 @@ class Layer(RenderMixin):
 
         Args:
             data (:obj:`list` of :obj:`dict`): Data to be plotted, ideally as a Pandas DataFrame
-            update_triggers (:obj:`dict` of :obj`(str, str)`): Dictionary specifying which functions to call
             js_function_overrides (:obj:`dict` of :obj`(str, str)`): Dictionary that allows the user to
                 specify JS functions for more control of behavior in deck.gl.
 
@@ -52,7 +53,7 @@ class Layer(RenderMixin):
     def __init__(
         self,
         data,
-        update_triggers={},
+        time_field=None,
         js_function_overrides={}
     ):
         super(Layer, self).__init__()
@@ -64,8 +65,20 @@ class Layer(RenderMixin):
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
         self.js_function_overrides = js_function_overrides
 
-        if isinstance(update_triggers, dict):
-            self.update_triggers = update_triggers
+        if time_field is not None:
+            times = []
+            try:
+                times = [d[time_field] for d in json.loads(self.data)]
+            except KeyError:
+                raise Exception("Data does not have a time field named `%s`" % time_field)
+            self.update_triggers = "{getColor: [timeFilter]}"
+            self.time_field = time_field
+            self.min_time = min(times)
+            self.max_time = max(times)
+        else:
+            self.time_field = None
+            self.max_time = None
+            self.min_time = None
 
     def _join_attrs(self):
         """Joins valid object attributes to populate a DeckGL layer object's

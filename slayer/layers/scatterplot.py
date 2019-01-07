@@ -45,4 +45,4 @@ class Scatterplot(Layer):
         self.get_radius = make_js_get_radius(radius)
         if isinstance(color, ColorScale):
             color.set_data(self.data)
-        self.get_color = make_js_get_color(color)
+        self.get_color = make_js_get_color(color, time_field=self.time_field)

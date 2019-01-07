@@ -5,7 +5,7 @@ import slimit
 from slayer.string_utils import suppress_stderr
 
 
-def check_js_equal(expected, actual):
+def check_js_equal(expected=None, actual=None):
     """Minify the JavaScript and compare it"""
     with suppress_stderr():
         print('Minifying expected JS')

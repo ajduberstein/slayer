@@ -1,0 +1,13 @@
+var timeFilter = {{min_time}};
+
+function repeatFunc() {
+    timeFilter += 1;
+    if (timeFilter > {{max_time}}) {
+        timeFilter = {{min_time}};
+    }
+    layers = getLayers();
+    deckgl.setProps({layers});
+    setDatetime(timeFilter);
+}
+
+setInterval(repeatFunc, {{cadence or 250}});

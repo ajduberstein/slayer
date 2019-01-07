@@ -1,3 +1,7 @@
-{{ header }}
+{% include 'header.j2' %}
+{% if add_timer %}
+  {% include 'timer.j2' %}
+  {% include 'time_label.j2' %}
+{% endif %}
 {{ js }}
-{{ footer }}
+{% include 'footer.j2' %}

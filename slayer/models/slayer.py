@@ -55,9 +55,12 @@ class Slayer(object):
 
     def compile_layers(self):
         layers = [layer.render() for layer in self._layers]
+        self.add_timer = any([layer.time_field for layer in self._layers])
+        self.min_time = min([layer.min_time for layer in self._layers])
+        self.max_time = max([layer.max_time for layer in self._layers])
         return ',\n'.join(layers)
 
-    def to_html(self, filename='', interactive=False, js_only=False):
+    def to_html(self, filename=None, interactive=False, js_only=False):
         """Converts all layers and viewport objects into HTML
 
         Args:
@@ -75,10 +78,11 @@ class Slayer(object):
             mapbox_api_key=self.mapbox_api_key)
         if js_only:
             return js
-        header = j2_env.get_template('header.j2').render()
-        footer = j2_env.get_template('footer.j2').render()
         html = j2_env.get_template('body.j2').render(
-            header=header, js=js, footer=footer)
+            add_timer=self.add_timer,
+            min_time=self.min_time,
+            max_time=self.max_time,
+            js=js)
         if interactive:
             return display_html(html, filename=filename)
         if filename is None:

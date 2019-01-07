@@ -1,0 +1,9 @@
+function (x) {
+{% for c in conditionals %}
+  {% if not loop.first -%}else {% endif -%}
+  if ({{c.lower_bound}} <= x["{{c.field_name}}"] &&
+      x["{{c.field_name}}"] < {{c.upper_bound|default('Infinity')}}) {
+    return {{ c.map_characteristic }}
+  }
+{% endfor %}
+}
