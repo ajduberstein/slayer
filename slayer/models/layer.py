@@ -75,6 +75,10 @@ class Layer(RenderMixin):
             self.time_field = time_field
             self.min_time = min(times)
             self.max_time = max(times)
+        else:
+            self.time_field = None
+            self.max_time = None
+            self.min_time = None
 
     def _join_attrs(self):
         """Joins valid object attributes to populate a DeckGL layer object's

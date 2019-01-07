@@ -1,6 +1,6 @@
 {{ viewport }};
 
-var layers = []
+var layers = [];
 
 function getLayers() {
   return [
@@ -17,7 +17,13 @@ var deckgl = new deck.DeckGL({
   layers: layers
 });
 
-
 function onViewportChange(viewport) {
   deckgl.setProps({viewState: viewport});
 }
+
+function init() {
+  layers = getLayers();
+  deckgl.setProps({layers});
+}
+
+init();

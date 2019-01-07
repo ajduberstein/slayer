@@ -34,7 +34,7 @@ def make_js_get_color(color, time_field=None):
             str: Executable JavaScript meant for embedding in deck.gl object.
     """
     func_pieces = []
-    if time_field:
+    if time_field is not None:
         js_filter = ('if (x["%s"] > timeFilter) {'
                      '    return [0, 0, 0, 0];'
                      '}')
