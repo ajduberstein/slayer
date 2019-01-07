@@ -5,7 +5,7 @@ from .color_scale import ColorScale
 CONST_TEMPLATE = 'return %s;'
 STR_CONST_TEMPLATE = 'return "%s";'
 FIELD_TEMPLATE = 'return x["%s"];'
-CONDITIONAL_TEMPLATE = '%s;'
+CONDITIONAL_TEMPLATE = '%s'
 
 
 def wrap_js_func(func):
@@ -83,7 +83,7 @@ def _safe_get(arr, idx, default=None):
 def _make_deckgl_conditional(breaks_list, characteristic_list, attr_name):
     """Creates a JS conditional statement for use in deck.gl functions"""
     js_pieces = []
-    js_conditional_template = 'else if (%s <= x["%s"] && x["%s"] < %s)\n\t{\n\treturn %s}\n'
+    js_conditional_template = 'else if (%s <= x["%s"] && x["%s"] < %s) {  return %s; }'
     characteristic_list = list(characteristic_list)
     breaks_list = list(breaks_list)
     i = 0
