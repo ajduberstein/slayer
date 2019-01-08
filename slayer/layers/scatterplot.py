@@ -9,7 +9,7 @@ from ..models.get_functions import (
 from ..models import ColorScale
 
 
-ORANGE_RGB = [255, 127, 0]
+ORANGE_RGB = [255, 127, 0, 166]
 
 
 class Scatterplot(Layer):

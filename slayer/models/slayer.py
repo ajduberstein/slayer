@@ -30,10 +30,12 @@ class Slayer(object):
         viewport,
         layers=None,
         mapbox_api_key=None,
+        blend=False,
     ):
         self.viewport = viewport
         self._layers = layers or []
-        self.mapbox_api_key = os.environ.get('MAPBOX_API_KEY') or mapbox_api_key
+        self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
+        self.blend = blend
 
     def __add__(self, obj):
         """Appends a Layer or creates a Viewport
@@ -75,6 +77,7 @@ class Slayer(object):
         js = j2_env.get_template('js.j2').render(
             layers=rendered_layers,
             viewport=rendered_viewport,
+            blend=self.blend,
             mapbox_api_key=self.mapbox_api_key)
         if js_only:
             return js
