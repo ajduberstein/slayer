@@ -27,8 +27,9 @@ class Scatterplot(Layer):
                 lat-lon pairs should be listed as with longitude first,
                 since longitude is the horizontal/x-axis value.
 
-            color (`slayer.ColorScale`, `str`, or `list` of `float`): Desired color for data points, passabl
-                as a hex string, RGB array, or `ColorScale` object for more detailed plots.
+            color (:obj:`slayer.ColorScale`, :obj:`str`, or :obj:`list` of :obj:`float`):
+                Desired color for data points, passable as a hex string,
+                RGB array, or `ColorScale` object for more detailed plots.
 
     """
 
