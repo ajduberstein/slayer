@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import jinja2
 
 from .base import RenderMixin
+from ..data_utils import get_n_pct
 
 
 class Viewport(RenderMixin):
@@ -43,3 +44,12 @@ class Viewport(RenderMixin):
        bearing: {{ bearing }}
      }''')
         return template.render(**self.to_json())
+
+    @classmethod
+    def autocompute(cls, points, view_propotion=1):
+        bbox = get_n_pct(points, view_propotion)
+        return cls.__init__()
+
+
+def bbox_to_viewport(bbox):
+    return
