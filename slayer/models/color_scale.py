@@ -11,8 +11,14 @@ from .scales.interpolate import interpolate
 
 
 class ColorScale(object):
-    """
-    Inspired by the way QGIS handles colors
+    """Computes a lookup between a vector of data and color values across
+    the data.
+
+    Inspired by the way QGIS handles colors.
+
+    Args:
+        variable_name (str):
+        palette (:obj:`str` or :obj:`list` of :obj:`list`):
     """
 
     def __init__(

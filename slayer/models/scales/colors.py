@@ -4,6 +4,11 @@ import numpy as np
 
 
 def get_random_rgb():
+    """Generate a random RGB value
+
+    Returns:
+        :obj:`list` of :obj:`float`: Random RGB array
+    """
     return [round(np.random.random()*255) for _ in range(0, 3)]
 
 

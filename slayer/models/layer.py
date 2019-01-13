@@ -54,6 +54,8 @@ class Layer(RenderMixin):
         self,
         data,
         time_field=None,
+        opacity=1,
+        blend='',
         js_function_overrides={}
     ):
         super(Layer, self).__init__()
@@ -79,6 +81,8 @@ class Layer(RenderMixin):
             self.time_field = None
             self.max_time = None
             self.min_time = None
+
+        self.opacity = float(opacity)
 
     def _join_attrs(self):
         """Joins valid object attributes to populate a DeckGL layer object's
