@@ -50,6 +50,3 @@ class Viewport(RenderMixin):
         bbox = get_n_pct(points, view_propotion)
         return cls.__init__()
 
-
-def bbox_to_viewport(bbox):
-    return
