@@ -27,7 +27,7 @@ class Slayer(object):
 
     def __init__(
         self,
-        viewport,
+        viewport=None,
         layers=None,
         mapbox_api_key=None,
         blend=False,
@@ -43,7 +43,7 @@ class Slayer(object):
         ggplot2-inspired operator overload
 
         Args:
-            obj (:obj`Layer` or :obj`Viewport`): Layers or viewport to be
+            obj (:obj`Layer` or :obj:`Viewport`): Layers or viewport to be
                 appended to the Slayer object
         """
         if isinstance(obj, Layer):

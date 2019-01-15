@@ -2,13 +2,34 @@
 Functions that make it easier to provide a default centering
 for the Viewport, rather than having to toggle parameters
 """
+import numpy as np
 
 
-def find_data_centroid(points):
+def _squared_diff(x, x0):
+    return (x0 - x) * (x0 - x)
+
+
+def euclidean(y, y1):
+    """Classic Euclidean distance in n-dimensions
+
+    Examples:
+        >>> EPSILON = 0.001
+        >>> euclidean((3, 6, 5), (7, -5, 1)) - 12.369 < EPSILON
+
+    """
+    if not len(y) == len(y1):
+        raise Exception('Input coordinates must be of the same length')
+    return np.sqrt(sum([_squared_diff(x, x0) for x, x0 in zip(y, y1)]))
+
+
+def geometric_mean(points):
     """Gets centroid in a series of points
 
-    It's worth noting that there's no single
-    definition of a multivariate median: http://cgm.cs.mcgill.ca/~athens/Papers/depth.pdf
+    Args:
+        points (:obj:`list` of :obj:`list` of :obj:`float`): List of (x, y) coordinates
+
+    Returns:
+        tuple: The centroid of a list of points
     """
     avg_x = sum([p[0] for p in points]) / len(points)
     avg_y = sum([p[1] for p in points]) / len(points)
@@ -16,13 +37,78 @@ def find_data_centroid(points):
 
 
 def get_bbox(points):
-    """Get the bounding box around the data"""
+    """Get the bounding box around the data
+
+    Args:
+        points (:obj:`list` of :obj:`list` of :obj:`float`): List of (x, y) coordinates
+
+    Returns:
+        dict: Dictionary containing the top left and bottom right points of a bounding box
+    """
     xs = [p[0] for p in points]
     ys = [p[1] for p in points]
     max_x = max(xs)
     max_y = max(ys)
     min_x = min(xs)
     min_y = min(ys)
-    return {
-        'top_left': (min_x, max_y),
-        'bottom_right': (max_x, min_y)}
+    return ((min_x, max_y), (max_x, min_y))
+
+
+def k_nearest_neighbors(points, center, k):
+    """gets the k farthest points
+    args:
+        points (:obj:`list` of :obj:`list` of :obj:`float`): list of (x, y) coordinates
+        k (int): number of points
+
+    returns:
+        list: index of k furthest points
+
+    todo:
+        more efficient version
+    """
+    pts_with_distance = np.array([(pt, euclidean(pt, center)) for pt in points])
+    sorted_pts = sorted(pts_with_distance, key=lambda x: x[1])
+    return [x[0] for x in sorted_pts][:int(k)]
+
+
+def get_n_pct(points, proportion=1):
+    """Computes the bounding box of the maximum zoom for the specified list of points
+
+    Args:
+        points (:obj:`list` of :obj:`list` of :obj:`float`): List of (x, y) coordinates
+        proportion (float): Value between 0 and 1 representing the minimum proportion of data to be captured
+
+    Returns:
+        list: K nearest data points
+    """
+    if proportion == 1:
+        return points
+    # Compute the medioid of the data
+    centroid = geometric_mean(points)
+    # Retain the closest n*proportion points
+    n_to_keep = np.floor(proportion * len(points))
+    return k_nearest_neighbors(points, centroid, n_to_keep)
+
+
+def bbox_to_zoom_level(bbox):
+    """Computes the zoom level of a lat/lng bounding box
+
+    Args:
+        bbox (:obj:`list` of :obj:`list` of `:obj:`float`): Northwest and southeast corners of a bounding box,
+            given as two points in a list
+
+    Returns:
+        int: Zoom level of map in a WGS84 Mercator projection (e.g., like that of Google Maps)
+    """
+    lat_diff = max(bbox[0][0], bbox[1][0]) - min(bbox[0][0], bbox[1][0])
+    lng_diff = max(bbox[0][1], bbox[1][1]) - min(bbox[0][1], bbox[1][1])
+
+    max_diff = max(lng_diff, lat_diff)
+    zoom_level = None
+    if max_diff < (360.0 / np.power(2, 20)):
+        zoom_level = 21
+    else:
+        zoom_level = int(-1*((np.log(max_diff)/np.log(2.0)) - (np.log(360.0)/np.log(2))))
+        if (zoom_level < 1):
+            zoom_level = 1
+    return zoom_level

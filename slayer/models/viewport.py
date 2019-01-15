@@ -3,6 +3,12 @@ from __future__ import absolute_import
 import jinja2
 
 from .base import RenderMixin
+from ..data_utils.viewport_helpers import (
+    bbox_to_zoom_level,
+    geometric_mean,
+    get_bbox,
+    get_n_pct
+)
 
 
 class Viewport(RenderMixin):
@@ -43,3 +49,10 @@ class Viewport(RenderMixin):
        bearing: {{ bearing }}
      }''')
         return template.render(**self.to_json())
+
+    @classmethod
+    def autocompute(cls, points, view_propotion=1):
+        bbox = get_bbox(get_n_pct(points, view_propotion))
+        zoom = bbox_to_zoom_level(bbox)
+        center = geometric_mean(points)
+        return cls.__init__(latitude=center[1], longitude=center[0], zoom=zoom)
