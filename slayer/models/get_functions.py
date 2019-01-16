@@ -73,6 +73,22 @@ def make_js_get_radius(radius_field_or_value):
         return FIELD_TEMPLATE % radius_field_or_value
 
 
+@wrap_js_func
+def make_js_get_elevation(elevation_field_or_value):
+    if isinstance(elevation_field_or_value, float) or isinstance(elevation_field_or_value, int):
+        return CONST_TEMPLATE % elevation_field_or_value
+    if isinstance(elevation_field_or_value, str):
+        return FIELD_TEMPLATE % elevation_field_or_value
+
+
+@wrap_js_func
+def make_js_get_normal(normal_field_or_value):
+    if isinstance(normal_field_or_value, list):
+        return CONST_TEMPLATE % normal_field_or_value
+    if isinstance(normal_field_or_value, str):
+        return FIELD_TEMPLATE % normal_field_or_value
+
+
 def _safe_get(arr, idx, default=None):
     try:
         return arr[idx]
