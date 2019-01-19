@@ -74,7 +74,6 @@ class ColorScale(object):
 def produce_categorical_gradient(data_vector, scale_type, palette):
     # Choose from a common gradient
     classes = sorted(list(set(data_vector)))
-    print(classes)
     if scale_type == 'categorical' and len(classes) > len(palette):
         warn('Number of categories for the specified column is greater '
              'than the number of colors available in the color palette. '

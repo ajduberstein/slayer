@@ -69,7 +69,6 @@ def display_html(html_str, filename=None):
     f = None
     try:
         if is_cli():
-            print('hey')
             f = open_named_or_temporary_file(filename)
             f.write(html_str)
             path = os.path.realpath(f.name)
