@@ -20,6 +20,17 @@ VALID_LAYER_KEYWORDS = {
     'get_position',
     'get_radius',
     'get_start_position',
+    'get_fill_color',
+    'get_elevation',
+    'get_text',
+    'radius_pixels',
+    'text_anchor',
+    'get_size',
+    'get_angle',
+    'get_text_anchor',
+    'get_alignment_base',
+    'line_width',
+    'get_normal',
     'get_end_position',
     'get_line_color',
     'get_line_width',
@@ -48,12 +59,15 @@ class Layer(RenderMixin):
                     'get_color': 'function(d) { [Math.random() * 255, 0, Math.random() * 255, 255] }'
                 }
                 ```
+
     """
 
     def __init__(
         self,
         data,
         time_field=None,
+        min_time=None,
+        max_time=None,
         opacity=1,
         blend='',
         js_function_overrides={}
@@ -67,20 +81,16 @@ class Layer(RenderMixin):
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
         self.js_function_overrides = js_function_overrides
 
+        times = []
         if time_field is not None:
-            times = []
             try:
                 times = [d[time_field] for d in json.loads(self.data)]
             except KeyError:
                 raise Exception("Data does not have a time field named `%s`" % time_field)
             self.update_triggers = "{getColor: [timeFilter]}"
-            self.time_field = time_field
-            self.min_time = min(times)
-            self.max_time = max(times)
-        else:
-            self.time_field = None
-            self.max_time = None
-            self.min_time = None
+        self.time_field = time_field
+        self.min_time = min(times) if times else None
+        self.max_time = max(times) if times else None
 
         self.opacity = float(opacity)
 

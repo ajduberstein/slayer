@@ -76,6 +76,7 @@ def display_html(html_str, filename=None):
             webbrowser.open(url)
         elif in_ipynb():
             f = open_named_or_temporary_file(filename=filename, dir=os.getcwd())
+            f.write(html_str)
             local_name = f.name.split('/')[-1]
             return IFrame(local_name, height=500, width=500)
         else:
