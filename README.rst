@@ -28,3 +28,8 @@ For example, to plot 1 million points with a red-to-purple color scale, you can 
 >>> s = sly.Slayer(sly.Viewport(0, 0, zoom=5), mapbox_api_key='pk.YOUR_API_KEY') +\
 ...     sly.Scatterplot(data, color=sly.ColorScale('lat', 'RdPu'))
 >>> s.to_html(interactive=True)
+
+Installation
+===========
+
+Clone this directory and run `python setup.py install`. Navigate to the examples folder and have a look around.
