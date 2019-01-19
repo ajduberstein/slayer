@@ -32,4 +32,4 @@ For example, to plot 1 million points with a red-to-purple color scale, you can 
 Installation
 ===========
 
-Clone this directory and run `python setup.py install`. Navigate to the examples folder and have a look around.
+Clone this directory and run code`python setup.py install` and `cd examples` in this folder and have a look around.
