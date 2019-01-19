@@ -22,6 +22,11 @@ def make_js_get_position(position_field_names):
 
 
 @wrap_js_func
+def make_js_get_text(text_field_name):
+    return FIELD_TEMPLATE % text_field_name
+
+
+@wrap_js_func
 def make_js_get_color(color, time_field=None):
     """Converts color field or value to JS string for processing in browser
 
@@ -74,14 +79,6 @@ def make_js_get_radius(radius_field_or_value):
 
 
 @wrap_js_func
-def make_js_get_elevation(elevation_field_or_value):
-    if isinstance(elevation_field_or_value, float) or isinstance(elevation_field_or_value, int):
-        return CONST_TEMPLATE % elevation_field_or_value
-    if isinstance(elevation_field_or_value, str):
-        return FIELD_TEMPLATE % elevation_field_or_value
-
-
-@wrap_js_func
 def make_js_get_normal(normal_field_or_value):
     if isinstance(normal_field_or_value, list):
         return CONST_TEMPLATE % normal_field_or_value
@@ -117,3 +114,10 @@ def _make_deckgl_conditional(breaks_list, characteristic_list, attr_name):
 
 def _cut_first_else(string):
     return string.replace('else', '', 1).strip()
+
+
+@wrap_js_func
+def make_js_return_const(const):
+    if isinstance(const, str):
+        return STR_CONST_TEMPLATE % const
+    return CONST_TEMPLATE % const

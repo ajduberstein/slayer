@@ -14,20 +14,11 @@ ORANGE_RGB = [255, 127, 0]
 
 class PointCloudLayer(Layer):
     """Plot a point cloud, as are often seen in self-driving visualizations
-
-        Args:
-            fill_color (:obj:`slayer.ColorScale`, :obj:`str`, or :obj:`list` of :obj:`float`):
-                Desired color for data points, passable as a hex string,
-                RGB array, or `ColorScale` object for more detailed plots.
-            line_color (:obj:`slayer.ColorScale`, :obj:`str`, or :obj:`list` of :obj:`float`):
-                Desired color for data points, passable as a hex string,
-                RGB array, or `ColorScale` object for more detailed plots.
-
     """
     def __init__(
         self,
         data,
-        radiusPixels=4,
+        radius_pixels=4,
         position='position',
         normal=[0, 0, 1],
         color=ORANGE_RGB,
@@ -39,3 +30,4 @@ class PointCloudLayer(Layer):
             color.set_data(self.data)
         self.get_color = make_js_get_color(color, time_field=self.time_field)
         self.get_normal = make_js_get_normal(normal)
+        self.radius_pixels = radius_pixels
