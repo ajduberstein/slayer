@@ -32,4 +32,4 @@ For example, to plot 1 million points with a red-to-purple color scale, you can 
 Installation
 ===========
 
-Clone this directory and run :code:`python setup.py install` followed by :code:`cd examples` and then finally `jupyter notebook`.
+Clone this directory and run :code:`python setup.py install` followed by :code:`cd examples` and then finally :code:`jupyter notebook`.
