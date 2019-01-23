@@ -1,3 +1,4 @@
+from .hexagon_layer import HexagonLayer  # noqa
 from .line_layer import LineLayer  # noqa
 from .scatterplot import Scatterplot  # noqa
 from .polygon_layer import PolygonLayer  # noqa
