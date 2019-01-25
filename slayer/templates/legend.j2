@@ -1,0 +1,14 @@
+<div class='legend'>
+  {% if title %}
+    <div class='header'>{{ title }}</div>
+  {% endif %}
+  {% if subtitle %}
+  <div class='subheader'>{{ subtitle }}</div>
+  {% endif %}
+  {% for s in scale %}  
+    <div class='scale-row'>
+      <div class='square' style='background-color: rbga({{s.rgba}})></div>
+      <div class='scale-text'>{{s.scale_range}}</div>
+    </div>
+  {% endfor %}
+</div>

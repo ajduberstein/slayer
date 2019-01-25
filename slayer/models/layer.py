@@ -7,6 +7,8 @@ import jinja2
 import pandas as pd
 
 from .base import RenderMixin
+from .color_scale import ColorScale
+
 
 VALID_LAYER_KEYWORDS = {
     'id',
@@ -72,22 +74,23 @@ class Layer(RenderMixin):
         min_time=None,
         max_time=None,
         opacity=1,
-        blend='',
+        title='',
         js_function_overrides={}
     ):
         super(Layer, self).__init__()
         if isinstance(data, pd.DataFrame):
-            data = data.to_json(orient='records')
+            data = data.to_dict('records')
         self.data = data
         class_name = self.__class__.__name__
         # Layer name for deck.gl
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
         self.js_function_overrides = js_function_overrides
+        self.title = ''
 
         times = []
         if time_field is not None:
             try:
-                times = [d[time_field] for d in json.loads(self.data)]
+                times = [d[time_field] for d in self.data]
             except KeyError:
                 raise Exception("Data does not have a time field named `%s`" % time_field)
             self.update_triggers = "{getColor: [timeFilter]}"
@@ -110,7 +113,6 @@ class Layer(RenderMixin):
         ```
 
         which will then be called by `render`
-
         """
         deckgl_chart_args = []
         for attr in self.__dict__.keys():
@@ -118,6 +120,9 @@ class Layer(RenderMixin):
                 continue
             js_func_str = self.js_function_overrides.get(attr) or '{{ %s }}' % attr
             deckgl_chart_arg = '\n\t\t{named_arg}: {js_func}'.format(named_arg=camelCase(attr), js_func=js_func_str)
+            if attr == 'data':
+                deckgl_chart_arg = '\n\t\t{named_arg}: {data}'.format(
+                    named_arg='data', data=json.dumps(self.data))
             deckgl_chart_args.append(deckgl_chart_arg)
         return ','.join(deckgl_chart_args)
 
@@ -135,3 +140,11 @@ class Layer(RenderMixin):
             slayer (:obj`slayer.Slayer`): spatial layer wrapper object
         """
         slayer + self
+
+    def get_legend(self):
+        """Gets a color-based legend"""
+        if isinstance(self.color, ColorScale):
+            return self.color.get_gradient_lookup()
+        if isinstance(self.color, dict):
+            return self.color
+        return None

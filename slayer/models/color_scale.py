@@ -23,8 +23,8 @@ class ColorScale(object):
 
     def __init__(
         self,
-        variable_name=None,
         palette=None,
+        variable_name=None,
         reverse_colors=False,
         scale_type='quantile',
         num_classes=5,
@@ -37,7 +37,7 @@ class ColorScale(object):
             self.palette = palette
         else:
             raise Exception('`palette` must be a `list` of RGB values or a `str` indicating one of a list '
-                            'of common palettes.')
+                            'of common ColorBrewer palettes: %s' % ', '.join(DEFAULT_PALETTES.keys()))
         if reverse_colors is True:
             self.palette = palette[::-1]
 
@@ -68,6 +68,8 @@ class ColorScale(object):
             self.gradient_lookup = produce_numerical_gradient(breaks, self.palette)
 
     def get_gradient_lookup(self):
+        if self.gradient_lookup is None:
+            raise ValueError('Data must be set to get the gradient lookup')
         return self.gradient_lookup
 
 

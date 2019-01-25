@@ -29,13 +29,16 @@ class Slayer(object):
         self,
         viewport=None,
         layers=None,
+        legends=None,
         mapbox_api_key=None,
         blend=False,
     ):
         self.viewport = viewport
         self._layers = layers or []
+        self._legends = legends or []
         self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
         self.blend = blend
+        self.add_timer = False
 
     def __add__(self, obj):
         """Appends a Layer or creates a Viewport
@@ -56,10 +59,15 @@ class Slayer(object):
             raise TypeError('+ is supported for Layer or Viewport objects only')
 
     def compile_layers(self):
-        layers = [layer.render() for layer in self._layers]
-        self.add_timer = any([layer.time_field for layer in self._layers])
-        self.min_time = min([layer.min_time for layer in self._layers])
-        self.max_time = max([layer.max_time for layer in self._layers])
+        layers = []
+        self.min_time = float('inf')
+        self.max_time = float('-inf')
+        for layer in self._layers:
+            layers.append(layer.render())
+            self.add_timer = layer.time_field or self.add_timer
+            self.min_time = min(layer.min_time, self.min_time)
+            self.max_time = max(layer.max_time, self.max_time)
+            self.titles = layer.title
         return ',\n'.join(layers)
 
     def to_html(self, filename=None, interactive=False, js_only=False):
@@ -85,6 +93,7 @@ class Slayer(object):
             add_timer=self.add_timer,
             min_time=self.min_time,
             max_time=self.max_time,
+            legends=self._legends or self._layers[0].get_legend(),
             js=js)
         if interactive:
             return display_html(html, filename=filename)
