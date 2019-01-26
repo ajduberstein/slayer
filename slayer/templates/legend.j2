@@ -1,14 +1,12 @@
-<div class='legend'>
-  {% if title %}
-    <div class='header'>{{ title }}</div>
-  {% endif %}
-  {% if subtitle %}
-  <div class='subheader'>{{ subtitle }}</div>
-  {% endif %}
-  {% for s in scale %}  
-    <div class='scale-row'>
-      <div class='square' style='background-color: rbga({{s.rgba}})></div>
-      <div class='scale-text'>{{s.scale_range}}</div>
+<div id='legend'>
+    <h4>{{ 'Color Scale' }}</h4>
+    <div class='container'>
+    {% for label in legends.keys() %}
+      <div class='row'>
+        <div class='legend-square' style='background-color:rgba({{legends[label]}})'></div>
+        <div class='legend-text'style=''>{{label}}</div>
+      </div>
+      <br/>
+    {% endfor %}
     </div>
-  {% endfor %}
 </div>

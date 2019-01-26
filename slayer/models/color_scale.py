@@ -28,6 +28,7 @@ class ColorScale(object):
         reverse_colors=False,
         scale_type='quantile',
         num_classes=5,
+        display_formatter=None,
         data=None
     ):
         # Set palette
@@ -51,6 +52,7 @@ class ColorScale(object):
         self.num_classes = num_classes
         if data is not None:
             self.set_data(data)
+        self.display_formatter = display_formatter
 
     def set_data(self, data):
         if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
@@ -67,9 +69,16 @@ class ColorScale(object):
             breaks = calculate_breaks(self.data_vector, self.scale_type, self.num_classes)
             self.gradient_lookup = produce_numerical_gradient(breaks, self.palette)
 
-    def get_gradient_lookup(self):
+    def get_gradient_lookup(self, for_display=False):
         if self.gradient_lookup is None:
             raise ValueError('Data must be set to get the gradient lookup')
+        if for_display:
+            display_dict = OrderedDict([])
+            for k in self.gradient_lookup.keys():
+                str_rgba = ', '.join([str(int(x)) for x in self.gradient_lookup[k]])
+                display_k = self.display_formatter % k if self.display_formatter else k
+                display_dict[display_k] = str_rgba
+            return display_dict
         return self.gradient_lookup
 
 

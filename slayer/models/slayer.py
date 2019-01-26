@@ -5,7 +5,10 @@ import jinja2
 
 from .layer import Layer
 from .viewport import Viewport
-from ..io import display_html
+from ..io import (
+    display_html,
+    open_named_or_temporary_file
+)
 
 
 TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), '../templates/')
@@ -89,15 +92,15 @@ class Slayer(object):
             mapbox_api_key=self.mapbox_api_key)
         if js_only:
             return js
+        legends = self._legends or self._layers[0].get_legend()
         html = j2_env.get_template('body.j2').render(
             add_timer=self.add_timer,
             min_time=self.min_time,
             max_time=self.max_time,
-            legends=self._legends or self._layers[0].get_legend(),
+            legends=legends,
             js=js)
         if interactive:
             return display_html(html, filename=filename)
         if filename is None:
             return html
-        with open(filename, 'w+') as f:
-            f.write(filename)
+        open_named_or_temporary_file(filename).close()

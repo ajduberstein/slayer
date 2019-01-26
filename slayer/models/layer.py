@@ -144,7 +144,7 @@ class Layer(RenderMixin):
     def get_legend(self):
         """Gets a color-based legend"""
         if isinstance(self.color, ColorScale):
-            return self.color.get_gradient_lookup()
+            return self.color.get_gradient_lookup(for_display=True)
         if isinstance(self.color, dict):
             return self.color
         return None
