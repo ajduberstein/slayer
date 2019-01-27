@@ -12,10 +12,10 @@ def get_random_rgb():
     return [round(np.random.random()*255) for _ in range(0, 3)]
 
 
+"""
+Selection of colors from http://colorbrewer2.org/
+"""
 DEFAULT_PALETTES = {
-    """
-    Selection of colors from http://colorbrewer2.org/
-    """
     # sequential scales
     'BuGr': [[229, 245, 249], [44, 162, 95]],
     'BuPu': [[224, 236, 244], [136, 86, 167]],
@@ -100,5 +100,6 @@ DEFAULT_PALETTES = {
         [255, 217, 47],
         [229, 196, 148],
         [179, 179, 179]
-    ]
+    ],
+    'random': []
 }

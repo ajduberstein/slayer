@@ -1,0 +1,12 @@
+<div id='legend'>
+    <h4>{{ 'Color Scale' }}</h4>
+    <div class='container'>
+    {% for label in legend.keys() %}
+      <div class='row'>
+        <div class='legend-square' style='background-color:rgba({{legend[label]}})'></div>
+        <div class='legend-text'style=''>{{label}}</div>
+      </div>
+      <br/>
+    {% endfor %}
+    </div>
+</div>

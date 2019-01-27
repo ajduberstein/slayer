@@ -23,11 +23,12 @@ class ColorScale(object):
 
     def __init__(
         self,
-        variable_name=None,
         palette=None,
+        variable_name=None,
         reverse_colors=False,
         scale_type='quantile',
         num_classes=5,
+        display_formatter=None,
         data=None
     ):
         # Set palette
@@ -37,7 +38,7 @@ class ColorScale(object):
             self.palette = palette
         else:
             raise Exception('`palette` must be a `list` of RGB values or a `str` indicating one of a list '
-                            'of common palettes.')
+                            'of common ColorBrewer palettes: %s' % ', '.join(DEFAULT_PALETTES.keys()))
         if reverse_colors is True:
             self.palette = palette[::-1]
 
@@ -51,6 +52,7 @@ class ColorScale(object):
         self.num_classes = num_classes
         if data is not None:
             self.set_data(data)
+        self.display_formatter = display_formatter
 
     def set_data(self, data):
         if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
@@ -67,8 +69,21 @@ class ColorScale(object):
             breaks = calculate_breaks(self.data_vector, self.scale_type, self.num_classes)
             self.gradient_lookup = produce_numerical_gradient(breaks, self.palette)
 
-    def get_gradient_lookup(self):
+    def get_gradient_lookup(self, for_display=False):
+        if self.gradient_lookup is None:
+            raise ValueError('Data must be set to get the gradient lookup')
+        if for_display:
+            display_dict = OrderedDict([])
+            for k in self.gradient_lookup.keys():
+                str_rgba = ', '.join([str(int(x)) for x in self.gradient_lookup[k]])
+                display_k = self.display_formatter % k if self.display_formatter else k
+                display_dict[display_k] = str_rgba
+            return display_dict
         return self.gradient_lookup
+
+    def is_categorical(self):
+        """Returns True if categorical scale, False otherwise"""
+        return self.scale_type in ('categorical', 'categorical_random')
 
 
 def produce_categorical_gradient(data_vector, scale_type, palette):
@@ -81,7 +96,7 @@ def produce_categorical_gradient(data_vector, scale_type, palette):
     colors = []
     for i, c in enumerate(classes):
         if scale_type == 'categorical':
-            colors.append(palette[i % len(c)])
+            colors.append(palette[i % len(palette)])
         elif scale_type == 'categorical_random':
             colors.append(get_random_rgb())
     return OrderedDict([item for item in zip(classes, colors)])

@@ -47,3 +47,4 @@ class Scatterplot(Layer):
         if isinstance(color, ColorScale):
             color.set_data(self.data)
         self.get_color = make_js_get_color(color, time_field=kwargs.get('time_field'))
+        self.color = color
