@@ -34,14 +34,14 @@ class Slayer(object):
         self,
         viewport=None,
         layers=None,
-        legends=None,
+        add_legend=True,
         mapbox_api_key=None,
         blend=False,
         drag_boxes=True
     ):
         self.viewport = viewport or Viewport()
         self._layers = layers or []
-        self._legends = legends or []
+        self.add_legend = add_legend
         self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
         self.blend = blend
         self.add_timer = False
@@ -99,7 +99,7 @@ class Slayer(object):
             mapbox_api_key=self.mapbox_api_key)
         if js_only:
             return js
-        legend = self._legends or self._layers[0].get_legend()
+        legend = self._layers[0].get_legend() if self.add_legend else None
         html = j2_env.get_template('body.j2').render(
             add_timer=self.add_timer,
             min_time=self.min_time,
