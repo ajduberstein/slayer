@@ -66,6 +66,7 @@ class Slayer(object):
             raise TypeError('+ is supported for Layer or Viewport objects only')
 
     def compile_layers(self):
+        """Computes attributes across layers"""
         layers = []
         self.min_time = float('inf')
         self.max_time = float('-inf')
@@ -74,7 +75,6 @@ class Slayer(object):
             self.add_timer = layer.time_field or self.add_timer
             self.min_time = min(layer.min_time, self.min_time)
             self.max_time = max(layer.max_time, self.max_time)
-            self.titles = layer.title
         return ',\n'.join(layers)
 
     def to_html(self, filename=None, interactive=False, js_only=False):
