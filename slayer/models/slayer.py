@@ -23,9 +23,11 @@ class Slayer(object):
     Attributes:
         layers (:obj:`list` of :obj:`Layer`): Layers to be plotted on a map
         viewport (:obj:`slayer.Viewport`): Viewport that defines the angle at which the user
-            observes the layers
+            observes the layers. If nothing is passed, the Viewport will be autocomputed off
+            the first-passed layer.
         mapbox_api_key (:obj:`str`, optional): Public API key from Mapbox.
             Can be passed as MAPBOX_API_KEY environment variable.
+            Tokens can be found at https://www.mapbox.com/account/access-tokens
     """
 
     def __init__(
@@ -36,7 +38,7 @@ class Slayer(object):
         mapbox_api_key=None,
         blend=False,
     ):
-        self.viewport = viewport
+        self.viewport = viewport or Viewport()
         self._layers = layers or []
         self._legends = legends or []
         self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
@@ -77,14 +79,17 @@ class Slayer(object):
         """Converts all layers and viewport objects into HTML
 
         Args:
-            js_only (bool): Should be True if the user wants to return only the
-                compiled JS
+            filename (str): Filename to write HTML to. If none is passed, an HTML string
+                will be returned.
+            interactive (bool): Set to True if running in Jupyter or Python terminal.
+                Slayer will open the file in a web browser or, if Jupyter, an iframe.
+            js_only (bool): Returns only a portion of the compiled JS, for testing & development.
 
         Returns:
             str: Rendered HTML
         """
         rendered_layers = self.compile_layers()
-        rendered_viewport = self.viewport.render()
+        rendered_viewport = self.render_viewport()
         js = j2_env.get_template('js.j2').render(
             layers=rendered_layers,
             viewport=rendered_viewport,
@@ -92,15 +97,24 @@ class Slayer(object):
             mapbox_api_key=self.mapbox_api_key)
         if js_only:
             return js
-        legends = self._legends or self._layers[0].get_legend()
+        legend = self._legends or self._layers[0].get_legend()
         html = j2_env.get_template('body.j2').render(
             add_timer=self.add_timer,
             min_time=self.min_time,
             max_time=self.max_time,
-            legends=legends,
+            legend=legend,
             js=js)
         if interactive:
             return display_html(html, filename=filename)
         if filename is None:
             return html
         open_named_or_temporary_file(filename).close()
+
+    def render_viewport(self):
+        rendered_viewport = None
+        if self.viewport:
+            rendered_viewport = self.viewport.render()
+        else:
+            raise Exception('Must pass a Viewport object. See the documentation on `sly.Viewport`.')
+        # Viewport.autocompute(self._layers[0].get_points())
+        return rendered_viewport
