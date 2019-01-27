@@ -37,6 +37,7 @@ class Slayer(object):
         legends=None,
         mapbox_api_key=None,
         blend=False,
+        drag_boxes=True
     ):
         self.viewport = viewport or Viewport()
         self._layers = layers or []
@@ -44,6 +45,7 @@ class Slayer(object):
         self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
         self.blend = blend
         self.add_timer = False
+        self.drag_boxes = drag_boxes
 
     def __add__(self, obj):
         """Appends a Layer or creates a Viewport
@@ -103,7 +105,8 @@ class Slayer(object):
             min_time=self.min_time,
             max_time=self.max_time,
             legend=legend,
-            js=js)
+            js=js,
+            drag_boxes=self.drag_boxes)
         if interactive:
             return display_html(html, filename=filename)
         if filename is None:

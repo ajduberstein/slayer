@@ -81,6 +81,10 @@ class ColorScale(object):
             return display_dict
         return self.gradient_lookup
 
+    def is_categorical(self):
+        """Returns True if categorical scale, False otherwise"""
+        return self.scale_type in ('categorical', 'categorical_random')
+
 
 def produce_categorical_gradient(data_vector, scale_type, palette):
     # Choose from a common gradient
@@ -92,7 +96,7 @@ def produce_categorical_gradient(data_vector, scale_type, palette):
     colors = []
     for i, c in enumerate(classes):
         if scale_type == 'categorical':
-            colors.append(palette[i % len(c)])
+            colors.append(palette[i % len(palette)])
         elif scale_type == 'categorical_random':
             colors.append(get_random_rgb())
     return OrderedDict([item for item in zip(classes, colors)])

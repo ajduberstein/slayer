@@ -58,6 +58,7 @@ def make_js_get_color(color, time_field=None):
         func_pieces.append(CONST_TEMPLATE % color)
     elif isinstance(color, ColorScale):
         lookup = color.get_gradient_lookup()
+        conditional_str = ''
         conditional_str = _make_deckgl_conditional(
             lookup.keys(), lookup.values(), color.variable_name
         )
@@ -96,20 +97,38 @@ def _safe_get(arr, idx, default=None):
 def _make_deckgl_conditional(breaks_list, characteristic_list, attr_name):
     """Creates a JS conditional statement for use in deck.gl functions"""
     js_pieces = []
-    js_conditional_template = 'else if (%s <= x["%s"] && x["%s"] < %s) {  return %s; }'
+    is_categorical = type(breaks_list[-1]) == str
+    js_conditional_template = _get_js_conditional_template(is_categorical)
     characteristic_list = list(characteristic_list)
     breaks_list = list(breaks_list)
     i = 0
     while i < len(breaks_list):
-        if_statement = js_conditional_template % (
-            breaks_list[i],
-            attr_name,
-            attr_name,
-            _safe_get(breaks_list, i + 1, 'Infinity'),
-            characteristic_list[i])
+        parameters_tup = _get_parameters_tup(i, breaks_list, attr_name, characteristic_list, is_categorical)
+        if_statement = js_conditional_template % parameters_tup
         js_pieces.append(if_statement)
         i += 1
     return _cut_first_else('\n'.join(js_pieces))
+
+
+def _get_js_conditional_template(is_categorical):
+    if is_categorical:
+        js_conditional_template = 'else if (\'%s\' === x["%s"]) {  return %s; }'
+    else:
+        js_conditional_template = 'else if (%s <= x["%s"] && x["%s"] < %s) {  return %s; }'
+    return js_conditional_template
+
+
+def _get_parameters_tup(idx, breaks_list, attr_name, characteristic_list, is_categorical):
+    if is_categorical:
+        parameters_tup = (breaks_list[idx], attr_name, characteristic_list[idx])
+    else:
+        parameters_tup = (
+            breaks_list[idx],
+            attr_name,
+            attr_name,
+            _safe_get(breaks_list, idx + 1, 'Infinity'),
+            characteristic_list[idx])
+    return parameters_tup
 
 
 def _cut_first_else(string):
