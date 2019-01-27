@@ -23,6 +23,10 @@ var deckgl = new deck.DeckGL({
   onWebGLInitialized: webGLInit || None,
 {% endif %}
   layers: layers
+{% if add_tooltip %}
+  onLayerHover: onHover,
+  onLayerClick: onClick,
+{% endif %}
 });
 
 function onViewportChange(viewport) {

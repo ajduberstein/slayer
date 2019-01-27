@@ -3,5 +3,8 @@
   {% include 'timer.j2' %}
   {% include 'time_label.j2' %}
 {% endif %}
+{% if add_timer %}
+  {% include 'tooltip.j2' %}
+{% endif %}
 {{ js }}
 {% include 'footer.j2' %}

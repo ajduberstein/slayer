@@ -12,7 +12,6 @@ from ..io import (
 
 
 TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), '../templates/')
-
 j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATES_PATH),
                             trim_blocks=True)
 
@@ -37,15 +36,17 @@ class Slayer(object):
         add_legend=True,
         mapbox_api_key=None,
         blend=False,
-        drag_boxes=True
+        drag_boxes=True,
+        add_tooltip=True,
     ):
-        self.viewport = viewport or Viewport()
+        self.viewport = viewport
         self._layers = layers or []
         self.add_legend = add_legend
         self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
         self.blend = blend
         self.add_timer = False
         self.drag_boxes = drag_boxes
+        self.add_tooltip = add_tooltip
 
     def __add__(self, obj):
         """Appends a Layer or creates a Viewport
@@ -92,18 +93,20 @@ class Slayer(object):
         """
         rendered_layers = self.compile_layers()
         rendered_viewport = self.render_viewport()
+        legend = self._layers[0].get_legend() if self.add_legend else None
         js = j2_env.get_template('js.j2').render(
             layers=rendered_layers,
             viewport=rendered_viewport,
             blend=self.blend,
+            add_tooltip=self.add_tooltip,
             mapbox_api_key=self.mapbox_api_key)
         if js_only:
             return js
-        legend = self._layers[0].get_legend() if self.add_legend else None
         html = j2_env.get_template('body.j2').render(
             add_timer=self.add_timer,
             min_time=self.min_time,
             max_time=self.max_time,
+            add_tooltip=self.add_tooltip,
             legend=legend,
             js=js,
             drag_boxes=self.drag_boxes)
@@ -114,10 +117,14 @@ class Slayer(object):
         open_named_or_temporary_file(filename).close()
 
     def render_viewport(self):
-        rendered_viewport = None
-        if self.viewport:
-            rendered_viewport = self.viewport.render()
-        else:
-            raise Exception('Must pass a Viewport object. See the documentation on `sly.Viewport`.')
-        # Viewport.autocompute(self._layers[0].get_points())
-        return rendered_viewport
+        """Renders the JS for a deck.gl Viewport object
+
+        If no Viewport has been passed, Slayer will autocompute
+        a Viewport for the first layer of data.
+
+        Returns:
+            str: Viewport JS string
+        """
+        if self.viewport is not None:
+            return self.viewport.render()
+        return Viewport.autocompute(self._layers[0])
