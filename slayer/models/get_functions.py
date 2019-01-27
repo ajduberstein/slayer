@@ -97,7 +97,7 @@ def _safe_get(arr, idx, default=None):
 def _make_deckgl_conditional(breaks_list, characteristic_list, attr_name):
     """Creates a JS conditional statement for use in deck.gl functions"""
     js_pieces = []
-    is_categorical = type(breaks_list[-1]) == str
+    is_categorical = type(list(breaks_list)[-1]) == str
     js_conditional_template = _get_js_conditional_template(is_categorical)
     characteristic_list = list(characteristic_list)
     breaks_list = list(breaks_list)
