@@ -10,7 +10,7 @@ function getLayers() {
 
 
 {% if blend %}
-  {% include 'blend_js.j2' %}
+{% include 'blend_js.j2' %}
 {% endif %}
 
 {% if add_tooltip %}
@@ -43,6 +43,3 @@ function init() {
 }
 
 init();
-
-
-{% include 'drag_function.j2' %}
