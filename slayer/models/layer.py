@@ -73,6 +73,7 @@ class Layer(RenderMixin):
         time_field=None,
         min_time=None,
         max_time=None,
+        pickable=True,
         opacity=1,
         title='',
         js_function_overrides={}
@@ -86,6 +87,7 @@ class Layer(RenderMixin):
         self.layer_type = class_name if 'Layer' in self.__class__.__name__ else class_name + 'Layer'
         self.js_function_overrides = js_function_overrides
         self.title = ''
+        self.pickable = 'true' if pickable else 'false'
 
         times = []
         if time_field is not None:

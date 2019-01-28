@@ -13,6 +13,10 @@ function getLayers() {
   {% include 'blend_js.j2' %}
 {% endif %}
 
+{% if add_tooltip %}
+{% include 'tooltip.j2' %}
+{% endif %}
+
 var deckgl = new deck.DeckGL({
   container: 'map-container',
   mapboxApiAccessToken: '{{ mapbox_api_key }}',
@@ -22,7 +26,7 @@ var deckgl = new deck.DeckGL({
 {% if blend %}
   onWebGLInitialized: webGLInit || None,
 {% endif %}
-  layers: layers
+  layers: layers,
 {% if add_tooltip %}
   onLayerHover: onHover,
   onLayerClick: onClick,
