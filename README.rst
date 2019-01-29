@@ -52,4 +52,5 @@ In the shell, go:
 
 .. code-block:: python
 >>> git clone https://github.com/ajduberstein/slayer
+>>> cd slayer
 >>> python setup.py install
