@@ -78,7 +78,7 @@ class Slayer(object):
             self.max_time = max(layer.max_time, self.max_time)
         return ',\n'.join(layers)
 
-    def to_html(self, filename=None, interactive=False, js_only=False):
+    def to_html(self, filename=None, interactive=False, html_only=False, js_only=False):
         """Converts all layers and viewport objects into HTML
 
         Args:
@@ -112,9 +112,10 @@ class Slayer(object):
             drag_boxes=self.drag_boxes)
         if interactive:
             return display_html(html, filename=filename)
-        if filename is None:
+        if html_only:
             return html
-        open_named_or_temporary_file(filename).close()
+        with open_named_or_temporary_file(filename) as f:
+            f.write(html)
 
     def render_viewport(self):
         """Renders the JS for a deck.gl Viewport object
