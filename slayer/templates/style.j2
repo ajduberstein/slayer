@@ -1,3 +1,4 @@
+/* Map basics */
 body {
   margin: 0;
   padding: 0;
@@ -9,6 +10,7 @@ body {
   background-color:black;
 }
 
+/* Map legend */
 #legend {
   font-family: monospace;
   z-index: 500;
@@ -34,4 +36,11 @@ body {
 .legend-text {
   display: inline;
   margin-left: 5px;
+}
+
+/* Tooltip */
+#tooltip {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
 }

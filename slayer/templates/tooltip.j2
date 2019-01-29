@@ -1,6 +1,29 @@
 function onHover(info) {
   console.log('Hovered:', info);
+  setTooltip(info);
 }
 function onClick(info) {
-  console.log('Clicked:', info);
+  if (info) {
+    console.log('Clicked:', info);
+  }
+}
+
+function setTooltip(info) {
+  const el = document.getElementById('tooltip');
+  var object, x, y;
+  if (info) {
+    object = info.object;
+    x = info.x;
+    y = info.y;
+    {% if tooltip_info_dict %}
+    el.innerHTML = {{tooltip_info_dict}};
+    {% else %}
+    el.innerHTML = JSON.stringify(object);
+    {% endif %}
+    el.style.display = 'block';
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+  } else {
+    el.style.display = 'none';
+  }
 }
