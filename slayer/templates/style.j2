@@ -1,15 +1,16 @@
+/* Map basics */
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
 }
-
 #map-container {
   width: 100vw;
   height: 100vh;
   background-color:black;
 }
 
+/* Map legend */
 #legend {
   font-family: monospace;
   z-index: 500;
@@ -18,12 +19,14 @@ body {
   right: 10px;
   bottom: 30px;
   padding: 5px;
-  overflow-x: hidden;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 .row {
   line-height: 10px;
   display: inline; 
   height: 10px;
+  vertical-align: super;
 }
 .legend-square {
   float: left;
@@ -33,4 +36,13 @@ body {
 .legend-text {
   display: inline;
   margin-left: 5px;
+}
+
+/* Tooltip */
+#tooltip {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  background-color: {{ background_color or 'white'}};
+  padding: 1vw;
 }

@@ -10,7 +10,11 @@ function getLayers() {
 
 
 {% if blend %}
-  {% include 'blend_js.j2' %}
+{% include 'blend_js.j2' %}
+{% endif %}
+
+{% if add_tooltip %}
+{% include 'tooltip.j2' %}
 {% endif %}
 
 var deckgl = new deck.DeckGL({
@@ -22,7 +26,11 @@ var deckgl = new deck.DeckGL({
 {% if blend %}
   onWebGLInitialized: webGLInit || None,
 {% endif %}
-  layers: layers
+  layers: layers,
+{% if add_tooltip %}
+  onLayerHover: onHover,
+  onLayerClick: onClick,
+{% endif %}
 });
 
 function onViewportChange(viewport) {
@@ -35,6 +43,3 @@ function init() {
 }
 
 init();
-
-
-{% include 'drag_function.j2' %}

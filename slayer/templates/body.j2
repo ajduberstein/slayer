@@ -4,4 +4,7 @@
   {% include 'time_label.j2' %}
 {% endif %}
 {{ js }}
+{% if drag_boxes %}
+  {% include 'drag_function.j2' %}
+{% endif %}
 {% include 'footer.j2' %}
