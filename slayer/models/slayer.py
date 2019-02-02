@@ -5,6 +5,7 @@ import jinja2
 
 from .layer import Layer
 from .viewport import Viewport
+from .style import Style
 from ..io import (
     display_html,
     open_named_or_temporary_file
@@ -33,6 +34,7 @@ class Slayer(object):
         self,
         viewport=None,
         layers=None,
+        style=None,
         add_legend=True,
         mapbox_api_key=None,
         blend=False,
@@ -41,6 +43,7 @@ class Slayer(object):
     ):
         self.viewport = viewport
         self._layers = layers or []
+        self._style = style or Style()
         self.add_legend = add_legend
         self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
         self.blend = blend
@@ -110,6 +113,7 @@ class Slayer(object):
             add_tooltip=self.add_tooltip,
             color_field=color_field,
             legend=legend,
+            style=self._style,
             js=js,
             drag_boxes=self.drag_boxes)
         if interactive:
