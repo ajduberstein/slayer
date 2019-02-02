@@ -94,6 +94,7 @@ class Slayer(object):
         rendered_layers = self.compile_layers()
         rendered_viewport = self.render_viewport()
         legend = self._layers[0].get_legend() if self.add_legend else None
+        color_field = self._layers[0].get_color_field() if self.add_legend else None
         js = j2_env.get_template('js.j2').render(
             layers=rendered_layers,
             viewport=rendered_viewport,
@@ -107,6 +108,7 @@ class Slayer(object):
             min_time=self.min_time,
             max_time=self.max_time,
             add_tooltip=self.add_tooltip,
+            color_field=color_field,
             legend=legend,
             js=js,
             drag_boxes=self.drag_boxes)

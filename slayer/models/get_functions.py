@@ -13,10 +13,14 @@ def wrap_js_func(func):
         return 'function (x) { %s }' % func(*args, **kwargs)
     return wrapper
 
+
 @wrap_js_func
 def make_js_get_position(position_field_names):
     if len(position_field_names) == 2 and isinstance(position_field_names, list):
         return 'return [x["%s"], x["%s"]]' % (position_field_names[0], position_field_names[1])
+    if len(position_field_names) == 3 and isinstance(position_field_names, list):
+        return 'return [x["%s"], x["%s"], x["%s"]]' % (
+            position_field_names[0], position_field_names[1], position_field_names[2])
     elif isinstance(position_field_names, str):
         return FIELD_TEMPLATE % position_field_names
 

@@ -150,3 +150,9 @@ class Layer(RenderMixin):
         if isinstance(self.color, dict):
             return self.color
         return None
+
+    def get_color_field(self):
+        if isinstance(self.color, ColorScale):
+            return self.color.variable_name
+        if isinstance(self.color, str):
+            return self.color
