@@ -80,6 +80,8 @@ setup(
     author='Andrew Duberstein',
     author_email='ajduberstein+slayer@gmail.com',
     url='https://github.com/ajduberstein/slayer',
+    keywords=['data', 'geospatial', 'visualization'],
+    download_url='https://github.com/ajduberstein/slayer/releases/download/0.0.1/slayer-0.0.1.tar.gz',
     packages=find_packages(exclude=['example*']),
     include_package_data=True,
     package_dir={'slayer': 'slayer'},
@@ -99,6 +101,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ),
