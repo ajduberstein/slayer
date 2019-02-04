@@ -1,33 +1,6 @@
-function toCssString(json) {
-  const keys = Object.keys(json);
-  var k, attr;
-  var cssStr = '';
-  for (var i = 0; i < keys.length; i++) {
-    k = keys[i];
-    attr = json[k];
-    cssStr += `${k}: ${attr};`
-  }
-  return cssStr;
-}
-
-const timeLabelStyle = {
-  position: 'absolute',
-  background: '{{'white'}}',
-  left: '{{timer_left_css or '10px'}}',
-  top: '{{timer_top_css or '10px'}}',
-  'font-family': '"Helvetica Neue", sans-serif',
-  'font-size': '42px',
-  color: 'white',
-  margin: '10px',
-  'font-weight': 'bold',
-  'z-index': 2,
-  padding: '10px'
-}
-
 function addDatetimeLabel(datetime) {
   var h = document.createElement('div');
   h.innerHTML = '' + datetime;
-  h.style.cssText = toCssString(timeLabelStyle);
   h.id = 'datetimeLabel';
   document.getElementById('labels').appendChild(h);
 }
