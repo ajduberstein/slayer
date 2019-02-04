@@ -4,6 +4,7 @@ from ..models import Layer
 
 from ..models.get_functions import (
     make_js_get_color,
+    make_js_get_elevation_value,
     make_js_get_position
 )
 
@@ -20,6 +21,9 @@ class HexagonLayer(Layer):
         position=['lng', 'lat'],
         radius=1000,
         color=ORANGE_RGB,
+        elevation=None,
+        pickable=True,
+        extruded=True,
         **kwargs
     ):
         super(HexagonLayer, self).__init__(data, **kwargs)
@@ -28,6 +32,8 @@ class HexagonLayer(Layer):
         if isinstance(color, ColorScale):
             color.set_data(self.data)
         self.get_color = make_js_get_color(color, time_field=self.time_field)
-        self.pickable = 'true'
-        self.extruded = 'true'
+        self.color = color
+        self.pickable = 'true' if pickable else 'false'
+        self.extruded = 'true' if extruded else 'false'
         self.elevation_scale = float(4)
+        self.get_elevation_value = make_js_get_elevation_value(elevation)
