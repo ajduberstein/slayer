@@ -1,5 +1,5 @@
 LEGEND_DEFAULT = {
-    'font-family': 'monospace',
+    'font-family': '"Helvetica Neue", sans-serif',
     'z-index': 500,
     'background-color': 'white',
     'position': 'absolute',
@@ -11,7 +11,7 @@ LEGEND_DEFAULT = {
 }
 
 TOOLTIP_DEFAULT = {
-    'font-family': 'monospace',
+    'font-family': '"Helvetica Neue", sans-serif',
     'position': 'absolute',
     'z-index': 1,
     'pointer-events': 'none',
