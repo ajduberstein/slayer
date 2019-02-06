@@ -26,7 +26,7 @@ VALID_LAYER_KEYWORDS = {
     'extruded',
     'get_start_position',
     'get_fill_color',
-    'get_elevation',
+    'get_elevation_value',
     'get_text',
     'radius_pixels',
     'text_anchor',
@@ -34,6 +34,8 @@ VALID_LAYER_KEYWORDS = {
     'get_angle',
     'get_text_anchor',
     'get_alignment_base',
+    'get_elevation_base',
+    'elevation_domain',
     'line_width',
     'get_normal',
     'get_end_position',
@@ -95,7 +97,7 @@ class Layer(RenderMixin):
                 times = [d[time_field] for d in self.data]
             except KeyError:
                 raise Exception("Data does not have a time field named `%s`" % time_field)
-            self.update_triggers = "{getColor: [timeFilter]}"
+            self.update_triggers = "{getColor: [timeFilter], getElevationValue: [timeFilter]}"
         self.time_field = time_field
         self.min_time = min(times) if times else None
         self.max_time = max(times) if times else None

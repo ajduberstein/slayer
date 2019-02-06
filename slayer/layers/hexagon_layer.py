@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from math import log
+
 from ..models import Layer
 
 from ..models.get_functions import (
@@ -22,6 +24,7 @@ class HexagonLayer(Layer):
         radius=1000,
         color=ORANGE_RGB,
         elevation=None,
+        elevation_scale=None,
         pickable=True,
         extruded=True,
         **kwargs
@@ -35,5 +38,6 @@ class HexagonLayer(Layer):
         self.color = color
         self.pickable = 'true' if pickable else 'false'
         self.extruded = 'true' if extruded else 'false'
-        self.elevation_scale = float(4)
-        self.get_elevation_value = make_js_get_elevation_value(elevation)
+        self.get_elevation_value = make_js_get_elevation_value(elevation, self.time_field)
+        self.elevation_scale = len(self.data) / float(self.radius) if elevation_scale is None else elevation_scale
+        self.elevation_domain = '[0, %s]' % len(self.data)
