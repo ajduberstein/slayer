@@ -1,14 +1,16 @@
 slayer.py 
 ================
 
+[![build](https://travis-ci.com/ajduberstein/slayer.svg?branch=master)](https://travis-ci.com/ajduberstein/slayer)
+
 ![alt text](https://camo.githubusercontent.com/5da3ed41336cdccc6f186d13e9de7e97cced98b3/687474703a2f2f692e696d6775722e636f6d2f6d7666766766302e6a7067 "slayer.py")
 
 Short for "Spatial Layers," Slayer is a Python wrapper around [deck.gl](http://deck.gl/#/).
 
 *Features*
 
-- Scale. Built on WebGL, it can easily plot hundreds of thousands of points.
-- Focus on Data Science, Analytics, and GIS. The API is built for first-class interoperability with Pandas.
+- Scale. Built on WebGL, Slayer plots hundreds of thousands of points.
+- Focus on Data Science, Analytics, and GIS. API treats Pandas as a first class citizen.
 - Time. Built for plotting data over time.
 
 Example usage
