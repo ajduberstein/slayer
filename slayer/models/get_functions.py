@@ -1,3 +1,5 @@
+import jinja2
+
 from .color_scale import ColorScale
 
 
@@ -144,3 +146,16 @@ def make_js_return_const(const):
     if isinstance(const, str):
         return STR_CONST_TEMPLATE % const
     return CONST_TEMPLATE % const
+
+
+def make_js_get_elevation_value(elevation_value=None, time_field=None):
+    if time_field is not None:
+        template = jinja2.Template('''function(points) {
+            var boolFunc = function(d) { return d['{{time_field}}'] <= timeFilter }
+            const elevation = points.filter(boolFunc).length
+            return elevation;
+        }''')
+        return template.render(time_field=time_field)
+
+    if elevation_value is None:
+        return 'function(points) { return points.length }'
