@@ -66,7 +66,7 @@ test_requirements = [
     'PySocks>=1.5.6,!=1.5.7',
     'pytest>=2.8.0']
 
-with open('README.rst', 'r', 'utf-8') as f:
+with open('README.md', 'r', 'utf-8') as f:
     readme = f.read()
 with open('HISTORY.rst', 'r', 'utf-8') as f:
     history = f.read()
