@@ -12,7 +12,7 @@ s = sly.Slayer(sly.Viewport(longitude=-122.43, latitude=37.76, zoom=11)) +\
     sly.HexagonLayer(
         businesses.sample(n=20000),
         elevation_scale=1000,
-        color_range='OrRd',
+        color_range='Blues',
         position=['lng', 'lat'],
         radius=100,
         time_field='start_date')
