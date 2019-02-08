@@ -23,6 +23,7 @@ VALID_LAYER_KEYWORDS = {
     'elevation_scale',
     'get_radius',
     'radius',
+    'color_range',
     'extruded',
     'get_start_position',
     'get_fill_color',
