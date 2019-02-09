@@ -1,5 +1,8 @@
 function addDatetimeLabel(datetime) {
   var h = document.createElement('div');
+  {% if timer.display_format %}
+  datetime = moment.unix(datetime).format('{{timer.display_format}}');
+  {% endif %}
   h.innerHTML = '' + datetime;
   h.id = 'datetimeLabel';
   document.getElementById('labels').appendChild(h);

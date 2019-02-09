@@ -49,7 +49,7 @@ class Slayer(object):
         self.add_legend = add_legend
         self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
         self.blend = blend
-        self.timer = Timer(enable=False)
+        self._timer = Timer()
         self.drag_boxes = drag_boxes
         self.add_tooltip = add_tooltip
 
@@ -82,7 +82,7 @@ class Slayer(object):
         layers = []
         for layer in self._layers:
             layers.append(layer.render())
-            self.timer.adapt_to_layer(layer)
+            self._timer.fit_min_and_max(layer)
         return ',\n'.join(layers)
 
     def to_html(self, filename=None, interactive=False, html_only=False, js_only=False):
@@ -111,7 +111,7 @@ class Slayer(object):
         if js_only:
             return js
         html = j2_env.get_template('body.j2').render(
-            timer=self.timer,
+            timer=self._timer if self._timer.is_enabled() else None,
             add_tooltip=self.add_tooltip,
             color_field=color_field,
             legend=legend,

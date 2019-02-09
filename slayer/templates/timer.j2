@@ -2,12 +2,13 @@ var timeFilter = {{timer.min_time}};
 
 function repeatFunc() {
     timeFilter += {{timer.increment_unit}};
-    if (timeFilter > {{timer.convert_ts_to_seconds(timer.max_time)}}) {
-        timeFilter = {{timer.convert_ts_to_seconds(min_time)}};
+    if (timeFilter > {{timer.coerce_to_number(timer.max_time)}}) {
+        timeFilter = {{timer.coerce_to_number(timer.min_time)}};
     }
     layers = getLayers();
     deckgl.setProps({layers});
+    console.log(timeFilter);
     setDatetime(timeFilter);
 }
 
-setInterval(repeatFunc, {{timer.tick_rate}});
+setInterval(repeatFunc, {{timer.tick_rate*1000}});
