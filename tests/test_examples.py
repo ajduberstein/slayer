@@ -14,5 +14,6 @@ import subprocess
 
 def test_examples():
     subprocess.check_output(['python', './examples/scatterplot.py'])
+    subprocess.check_output(['python', './examples/scatterplot_over_time.py'])
     subprocess.check_output(['python', './examples/hexagon_layer.py'])
     assert True

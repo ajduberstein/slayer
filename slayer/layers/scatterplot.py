@@ -36,8 +36,8 @@ class Scatterplot(Layer):
     def __init__(
         self,
         data,
-        position=['lat', 'lng'],
-        radius=100000.0,
+        position=['lng', 'lat'],
+        radius=100.0,
         color=ORANGE_RGB,
         **kwargs
     ):

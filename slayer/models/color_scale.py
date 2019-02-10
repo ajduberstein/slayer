@@ -58,9 +58,9 @@ class ColorScale(object):
         if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
             self.data_vector = [d[self.variable_name] for d in data]
         elif isinstance(data, pd.DataFrame):
-            self.data_vector = list(data[self.variable_name])
+            self.data_vector = data[self.variable_name]
         else:
-            raise Exception('Data can only be set from a DataFrame or a dict')
+            raise TypeError('Data can only be set from a pandas.DataFrame, received', type(data))
 
         if self.scale_type in ('categorical', 'categorical_random'):
             self.breaks = produce_categorical_gradient(self.data_vector, self.scale_type, self.palette)
