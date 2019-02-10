@@ -1,10 +1,12 @@
 from __future__ import absolute_import
 
+import uuid
+
 from camel_snake_kebab import camelCase
 import jinja2
 import pandas as pd
 
-from .base import RenderMixin
+from .base import RenderInterface
 from .color_scale import ColorScale
 
 
@@ -43,13 +45,14 @@ VALID_LAYER_KEYWORDS = {
     'highlight_color',
     'highlighted_object_index',
     'auto_highlight',
+    'light_settings',
     'coordinate_system',
     'coordinate_origin',
     'model_matrix',
     'update_triggers'}
 
 
-class Layer(RenderMixin):
+class Layer(RenderInterface):
     """Base layer and parent to all Layers, handling DOM output
 
         Args:
@@ -89,6 +92,7 @@ class Layer(RenderMixin):
         self.js_function_overrides = js_function_overrides
         self.title = ''
         self.pickable = 'true' if pickable else 'false'
+        self.id = '"%s"' % uuid.uuid4()
 
         if time_field is not None:
             try:
