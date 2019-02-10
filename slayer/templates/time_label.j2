@@ -13,6 +13,11 @@ function setDatetime(datetime) {
   if (label == null) {
     addDatetimeLabel(datetime);
   } else {
+    {% if timer.display_format %}
+    label.innerHTML = moment.unix(datetime).format('{{timer.display_format}}');
+    {% else %}
     label.innerHTML = datetime;
+    {% endif %}
+
   }
 }

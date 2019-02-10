@@ -1,5 +1,3 @@
-import jinja2
-
 from .color_scale import ColorScale
 
 
@@ -33,7 +31,7 @@ def make_js_get_text(text_field_name):
 
 
 @wrap_js_func
-def make_js_get_color(color, time_field=None):
+def make_js_get_color(color, use_time=False):
     """Converts color field or value to JS string for processing in browser
 
         Arguments: color (`str`, `list` of `float`, or `slayer.ColorScale`): If string,
@@ -45,11 +43,10 @@ def make_js_get_color(color, time_field=None):
             str: Executable JavaScript meant for embedding in deck.gl object.
     """
     func_pieces = []
-    if time_field is not None:
-        js_filter = ('if (x["%s"] > timeFilter) {'
+    if use_time:
+        js_filter = ('if (x["__ts"] > timeFilter) {'
                      '    return [0, 0, 0, 0];'
                      '}')
-        js_filter = js_filter % (time_field)
         func_pieces.append(js_filter)
 
     if isinstance(color, str) and color.startswith('#'):
@@ -148,14 +145,14 @@ def make_js_return_const(const):
     return CONST_TEMPLATE % const
 
 
-def make_js_get_elevation_value(elevation_value=None, time_field=None):
-    if time_field is not None:
-        template = jinja2.Template('''function(points) {
-            var boolFunc = function(d) { return d['{{time_field}}'] <= timeFilter }
+def make_js_get_elevation_value(elevation_value=None, use_time=False):
+    if use_time:
+        return '''
+        function(points) {
+            var boolFunc = function(d) { return d['__ts'] <= timeFilter }
             const elevation = points.filter(boolFunc).length
             return elevation;
-        }''')
-        return template.render(time_field=time_field)
+        }'''.strip()
 
     if elevation_value is None:
         return 'function(points) { return points.length }'

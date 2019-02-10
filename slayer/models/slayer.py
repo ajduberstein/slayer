@@ -81,6 +81,9 @@ class Slayer(object):
         """Computes attributes across layers"""
         layers = []
         for layer in self._layers:
+            if layer.time_field:
+                for x in layer.data:
+                    x['__ts'] = self._timer.coerce_to_number(x[layer.time_field])
             layers.append(layer.render())
             self._timer.fit_min_and_max(layer)
         return ',\n'.join(layers)

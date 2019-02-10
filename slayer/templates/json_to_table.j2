@@ -1,14 +1,17 @@
-function buildTable(jsonObject) {
+function buildTable(jsonObject, shouldIndent) {
   const keys = Object.keys(jsonObject);
   if (keys.indexOf('points') > -1) {
     return processAggregated(jsonObject.points)
   }
-  var resStr = ''
+  var resStr = '';
+  var row;
   for (var i = 0; i < keys.length; i++) {
-    if (keys[i] === 'screenCoord') {
+    if (keys[i] === 'screenCoord' || keys[i] === '__ts') {
       continue;
     }
-    resStr += '<b>' + keys[i] + '</b> ' + jsonObject[keys[i]]
+    row = '<b>' + keys[i] + '</b> ' + jsonObject[keys[i]];
+    row = shouldIndent ? '&emsp;' + row : row;
+    resStr += row;
     if (i !== keys.length - 1) {
       resStr += '<br />'
     }
@@ -19,7 +22,7 @@ function buildTable(jsonObject) {
 function processAggregated(points) {
   plotPoint = points[0]
   return buildTable({
-    "First Point": "<br/>" + buildTable(points[0]),
+    "First Point": "<br/>" + buildTable(points[0], true),
     "Number of Points": points.length
   })
 }
