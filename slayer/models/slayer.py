@@ -49,7 +49,7 @@ class Slayer(object):
         self.add_legend = add_legend
         self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
         self.blend = blend
-        self._timer = Timer()
+        self._timer = timer or Timer()
         self.drag_boxes = drag_boxes
         self.add_tooltip = add_tooltip
 
@@ -82,8 +82,7 @@ class Slayer(object):
         layers = []
         for layer in self._layers:
             if layer.time_field:
-                for x in layer.data:
-                    x['__ts'] = self._timer.coerce_to_number(x[layer.time_field])
+                layer.data['__ts'] = layer.data[layer.time_field].apply(lambda ts: self._timer.coerce_to_number(ts))
             layers.append(layer.render())
             self._timer.fit_min_and_max(layer)
         return ',\n'.join(layers)

@@ -1,10 +1,11 @@
-import pandas as pd
-
-
+import datetime
 from warnings import warn
 
 
-VALID_INPUT_TYPES = ['frame_id', 'epoch', 'iso8601']
+import pandas as pd
+
+
+VALID_INPUT_TYPES = ['frame_id', 'epoch', 'iso8601', 'datetime']
 
 
 class Timer(object):
@@ -13,12 +14,13 @@ class Timer(object):
     ~~~
     Configuration governing time controls.
 
-    Note that specifying a single time field in the Slayer object will allow playing data through time. However,
-    if you'd like more fine-grained control, you should use this Timer object to configure
-    the speed the data is cycled through, whether the UI displays code that enables user interaction
-    with the timer, determines the size of the time delta between animations, or how the time is presented.
+    Specifying a single `time_field` in a `Slayer` object will allow plotting data through time. However,
+    if you'd like more fine-grained control, you should use this `Timer` object to configure
+    the speed the data is cycled through, to enable user interactions with the timer,
+    determine the size of the time delta between animations, or to decide how the time text itself is presented.
 
-    Acceptable inputs for time fields are ISO-8601 timestamps, integers, or epoch times.
+    Acceptable inputs for time fields are ISO-8601 timestamps, integers, epoch times, or
+    `datetime.datetime` objects.
 
     Attributes: min_time (float): Earliest time listed in the data, in seconds.
         max_time (float): Latest time listed in the data, in seconds.
@@ -54,12 +56,17 @@ class Timer(object):
         """
         self.min_time = min_time
         self.max_time = max_time
-        self.js_display_format = str(js_display_format) if js_display_format is not None else None
         self.increment_unit = float(self._get_increment_by(increment_by))
         self.controls = list(controls)
         self.tick_rate = float(tick_rate)
         self.input_type = self._interpret_input_type(input_type)
         self.loop = bool(loop)
+        self.js_display_format = js_display_format or self._suggest_display_format(self.input_type)
+
+    def _suggest_display_format(self, input_type):
+        if input_type in ('iso8601', 'datetime', 'epoch'):
+            return 'YYYY-MM-DD HH:mm:SS'
+        return ''
 
     def _interpret_input_type(self, input_type):
         if input_type not in VALID_INPUT_TYPES:
@@ -80,15 +87,16 @@ class Timer(object):
         try:
             if self.input_type == 'iso8601':
                 return pd.Timestamp(ts).value / 10. ** 9
+            if isinstance(ts, (datetime.date, datetime.datetime)):
+                return pd.Timestamp(ts).value / 10. ** 9
             return float(ts)
         except ValueError as e:
             raise type(e)(str(e) + '. Error processing %s' % ts)
 
     def fit_min_and_max(self, layer):
-        """Enables Timer if layer is present and sets min/max time from a layer"""
+        """Sets min/max time from a Layer"""
         self.min_time = min(self.coerce_to_number(layer.min_time), self.min_time)
         self.max_time = max(self.coerce_to_number(layer.max_time), self.max_time)
-        print(self.__dict__)
 
     def get_min_time(self):
         return self.min_time

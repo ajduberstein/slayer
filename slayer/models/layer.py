@@ -1,7 +1,5 @@
 from __future__ import absolute_import
 
-import json
-
 from camel_snake_kebab import camelCase
 import jinja2
 import pandas as pd
@@ -82,8 +80,8 @@ class Layer(RenderMixin):
         js_function_overrides={}
     ):
         super(Layer, self).__init__()
-        if isinstance(data, pd.DataFrame):
-            data = data.to_dict('records')
+        if not isinstance(data, pd.DataFrame):
+            data = pd.from_dict(data, orient='records')
         self.data = data
         class_name = self.__class__.__name__
         # Layer name for deck.gl
@@ -92,16 +90,15 @@ class Layer(RenderMixin):
         self.title = ''
         self.pickable = 'true' if pickable else 'false'
 
-        times = []
         if time_field is not None:
             try:
-                times = [d[time_field] for d in self.data]
+                times = data[time_field]
             except KeyError:
                 raise Exception("Data does not have a time field named `%s`" % time_field)
             self.update_triggers = "{getColor: [timeFilter], getElevationValue: [timeFilter]}"
         self.time_field = time_field
-        self.min_time = min(times) if times else None
-        self.max_time = max(times) if times else None
+        self.min_time = min(times) if time_field else None
+        self.max_time = max(times) if time_field else None
 
         self.opacity = float(opacity)
 
@@ -127,7 +124,7 @@ class Layer(RenderMixin):
             deckgl_chart_arg = '\n\t\t{named_arg}: {js_func}'.format(named_arg=camelCase(attr), js_func=js_func_str)
             if attr == 'data':
                 deckgl_chart_arg = '\n\t\t{named_arg}: {data}'.format(
-                    named_arg='data', data=json.dumps(self.data))
+                    named_arg='data', data=self.data.to_json(orient='records', date_format='iso'))
             deckgl_chart_args.append(deckgl_chart_arg)
         return ','.join(deckgl_chart_args)
 
