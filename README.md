@@ -7,11 +7,13 @@ slayer.py
 
 Short for "Spatial Layers," Slayer is a Python wrapper around [deck.gl](http://deck.gl/#/).
 
-*Features*
+_Features_
 
 - Scale. Built on WebGL, Slayer plots hundreds of thousands of points.
 - Focus on Data Science, Analytics, and GIS. API treats Pandas as a first class citizen.
 - Time. Built for plotting data over time.
+
+![slayer.py](https://media.giphy.com/media/YlI1IGJHaNw1We9se7/giphy.gif)
 
 Example usage
 ================
