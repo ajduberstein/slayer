@@ -13,6 +13,8 @@ _Features_
 - Focus on Data Science, Analytics, and GIS. API treats Pandas as a first class citizen.
 - Time. Built for plotting data over time.
 
+For example, 1.6M LIDAR points visualized here:
+
 ![slayer.py](https://media.giphy.com/media/YlI1IGJHaNw1We9se7/giphy.gif)
 
 Example usage
