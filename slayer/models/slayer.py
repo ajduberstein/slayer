@@ -81,10 +81,10 @@ class Slayer(object):
         """Computes attributes across layers"""
         layers = []
         for layer in self._layers:
-            if layer.time_field:
+            if layer.time_field is not None:
                 layer.data['__ts'] = layer.data[layer.time_field].apply(lambda ts: self._timer.coerce_to_number(ts))
+                self._timer.fit_min_and_max(layer)
             layers.append(layer.render())
-            self._timer.fit_min_and_max(layer)
         return ',\n'.join(layers)
 
     def to_html(self, filename=None, interactive=False, html_only=False, js_only=False):
@@ -107,6 +107,7 @@ class Slayer(object):
         js = j2_env.get_template('js.j2').render(
             layers=rendered_layers,
             viewport=rendered_viewport,
+            is_orbit_view=self.viewport.__class__.__name__ == 'OrbitView',
             blend=self.blend,
             add_tooltip=self.add_tooltip,
             mapbox_api_key=self.mapbox_api_key)

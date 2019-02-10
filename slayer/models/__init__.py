@@ -3,3 +3,4 @@ from .layer import Layer # noqa
 from .slayer import Slayer # noqa
 from .timer import Timer # noqa
 from .viewport import Viewport # noqa
+from .orbit_view import OrbitView # noqa

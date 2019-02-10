@@ -1,5 +1,4 @@
 import datetime
-from warnings import warn
 
 
 import pandas as pd
@@ -113,7 +112,4 @@ class Timer(object):
             bool: Boolean indicating that at least one layer has a time field
         """
         enabled = self.min_time != float('inf') and self.max_time != float('-inf')
-        if not enabled:
-            warn("""Timer is not enabled. Either min_time or max_time is not set.
-                  min_time: %s max_time: %s""" % (self.min_time, self.max_time))
         return enabled
