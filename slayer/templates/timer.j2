@@ -1,13 +1,23 @@
-var timeFilter = {{min_time}};
+{# see timer.py #}
+var timeFilter = {{timer.get_min_time()}};
 
 function repeatFunc() {
-    timeFilter += 1;
-    if (timeFilter > {{max_time}}) {
-        timeFilter = {{min_time}};
+    var prevTimeFilter = timeFilter;
+    timeFilter += {{timer.increment_unit}};
+    if (timeFilter > {{timer.get_max_time()}}) {
+	{% if timer.loop %}
+        timeFilter = {{timer.get_min_time()}};
+	{% else %}
+        timeFilter = {{timer.get_max_time()}};
+	clearInterval(ticker);
+	{% endif %}
+    }
+    if (timeFilter === prevTimeFilter) {
+        console.warn("Timer did not advance, at current value:", prevTimeFilter);
     }
     layers = getLayers();
     deckgl.setProps({layers});
     setDatetime(timeFilter);
 }
 
-setInterval(repeatFunc, {{cadence or 200}});
+var ticker = setInterval(repeatFunc, {{timer.tick_rate*1000}});

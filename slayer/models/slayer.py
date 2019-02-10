@@ -3,13 +3,14 @@ from __future__ import absolute_import
 import os.path
 import jinja2
 
-from .layer import Layer
-from .viewport import Viewport
-from .style import Style
 from ..io import (
     display_html,
     open_named_or_temporary_file
 )
+from .layer import Layer
+from .style import Style
+from .timer import Timer
+from .viewport import Viewport
 
 
 TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), '../templates/')
@@ -33,13 +34,14 @@ class Slayer(object):
     def __init__(
         self,
         viewport=None,
+        timer=None,
         layers=None,
         style=None,
         add_legend=True,
         mapbox_api_key=None,
         blend=False,
         drag_boxes=True,
-        add_tooltip=True,
+        add_tooltip=True
     ):
         self.viewport = viewport
         self._layers = layers or []
@@ -47,12 +49,12 @@ class Slayer(object):
         self.add_legend = add_legend
         self.mapbox_api_key = mapbox_api_key or os.environ.get('MAPBOX_API_KEY')
         self.blend = blend
-        self.add_timer = False
+        self._timer = Timer()
         self.drag_boxes = drag_boxes
         self.add_tooltip = add_tooltip
 
     def __add__(self, obj):
-        """Appends a Layer or creates a Viewport
+        """Appends a Layer, Viewport, Timer, or Style object
 
         ggplot2-inspired operator overload
 
@@ -66,19 +68,24 @@ class Slayer(object):
         elif isinstance(obj, Viewport):
             self.viewport = obj
             return self
+        elif isinstance(obj, Timer):
+            self._timer = obj
+            return self
+        elif isinstance(obj, Style):
+            self._style = obj
+            return self
         else:
-            raise TypeError('+ is supported for Layer or Viewport objects only')
+            raise TypeError('+ is supported for Layer, Viewport, Timer, or Style objects only')
 
     def compile_layers(self):
         """Computes attributes across layers"""
         layers = []
-        self.min_time = float('inf')
-        self.max_time = float('-inf')
         for layer in self._layers:
+            if layer.time_field:
+                for x in layer.data:
+                    x['__ts'] = self._timer.coerce_to_number(x[layer.time_field])
             layers.append(layer.render())
-            self.add_timer = layer.time_field or self.add_timer
-            self.min_time = min(layer.min_time, self.min_time)
-            self.max_time = max(layer.max_time, self.max_time)
+            self._timer.fit_min_and_max(layer)
         return ',\n'.join(layers)
 
     def to_html(self, filename=None, interactive=False, html_only=False, js_only=False):
@@ -107,9 +114,7 @@ class Slayer(object):
         if js_only:
             return js
         html = j2_env.get_template('body.j2').render(
-            add_timer=self.add_timer,
-            min_time=self.min_time,
-            max_time=self.max_time,
+            timer=self._timer if self._timer.is_enabled() else None,
             add_tooltip=self.add_tooltip,
             color_field=color_field,
             legend=legend,

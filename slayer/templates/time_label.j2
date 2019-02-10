@@ -1,5 +1,8 @@
 function addDatetimeLabel(datetime) {
   var h = document.createElement('div');
+  {% if timer.js_display_format %}
+  datetime = moment.unix(datetime).format('{{timer.js_display_format}}');
+  {% endif %}
   h.innerHTML = '' + datetime;
   h.id = 'datetimeLabel';
   document.getElementById('labels').appendChild(h);
@@ -10,6 +13,10 @@ function setDatetime(datetime) {
   if (label == null) {
     addDatetimeLabel(datetime);
   } else {
+    {% if timer.js_display_format %}
+    label.innerHTML = moment.unix(datetime).format('{{timer.js_display_format}}');
+    {% else %}
     label.innerHTML = datetime;
+    {% endif %}
   }
 }
