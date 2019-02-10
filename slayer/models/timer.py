@@ -22,7 +22,7 @@ class Timer(object):
 
     Attributes: min_time (float): Earliest time listed in the data, in seconds.
         max_time (float): Latest time listed in the data, in seconds.
-        display_format (str): Display string using Moment.js. For examples, see https://momentjs.com/
+        js_display_format (str): Display string using Moment.js. For examples, see https://momentjs.com/
         increment_unit (float): Number of seconds to increment the timer by on every tick
         controls (:obj:`list` of :obj:`str`): List of timer controls to render.
     """
@@ -33,7 +33,7 @@ class Timer(object):
             increment_by=1,
             tick_rate=0.5,
             controls=['pause', 'play', 'fast_forward', 'rewind'],
-            display_format=None,
+            js_display_format=None,
             loop=True,
             cumulative=True,
             min_time=float('inf'),
@@ -48,13 +48,13 @@ class Timer(object):
                 https://pandas.pydata.org/pandas-docs/version/0.23/generated/pandas.Timedelta.html
             tick_rate (float): Refresh rate of the data in seconds
             controls (:obj:`list` of :obj:`str`): List of timer controls to render.
-            display_format (str): Display string using Moment.js. For examples, see https://momentjs.com/
+            js_display_format (str): Display string using Moment.js. For examples, see https://momentjs.com/
             min_time (float): Earliest time listed in the data, in as a float. Calculated from data if not passed.
             max_time (float): Last time listed in the data, as a float. Calculated from data if not passed.
         """
         self.min_time = min_time
         self.max_time = max_time
-        self.display_format = str(display_format) if display_format is not None else None
+        self.js_display_format = str(js_display_format) if js_display_format is not None else None
         self.increment_unit = float(self._get_increment_by(increment_by))
         self.controls = list(controls)
         self.tick_rate = float(tick_rate)
