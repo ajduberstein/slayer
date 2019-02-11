@@ -22,7 +22,7 @@ var deckgl = new deck.DeckGL({
   mapboxApiAccessToken: '{{ mapbox_api_key }}',
   initialViewState: INITIAL_VIEW_STATE,
 {% if is_orbit_view %}
-  views: [new OrbitView()],
+  views: [new MapView()],
 {% endif %}
   onViewportChange: onViewportChange,
 {% if blend %}
