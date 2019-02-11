@@ -4,7 +4,7 @@ import jinja2
 from .base import ViewportInterface
 
 
-class OrbitView(ViewportInterface):
+class XYZView(ViewportInterface):
     """Configuration for data without an explicit need for a globe
 
     TODO reference deck.gl docs
@@ -25,7 +25,7 @@ class OrbitView(ViewportInterface):
         min_distance=1,
         max_distance=20
     ):
-        super(OrbitView, self).__init__()
+        super(XYZView, self).__init__()
         self.fov = fov
         self.rotation_x = rotation_x
         self.rotation_orbit = rotation_orbit
@@ -38,11 +38,15 @@ class OrbitView(ViewportInterface):
     def render(self):
         template = jinja2.Template("""
         var INITIAL_VIEW_STATE = {
+            latitude: 0.0,
+            longitude: 0.0,
             distance: {{distance}},
             rotationX: {{rotation_x}},
             rotationOrbit: {{rotation_orbit}},
             orbitAxis: "{{orbit_axis}}",
             zoom: {{zoom}},
+            maxZoom: 100,
+            maxPitch: 180,
             fov: {{fov}},
             minDistance: {{min_distance}},
             maxDistance: {{max_distance}}

@@ -107,7 +107,7 @@ class Slayer(object):
         js = j2_env.get_template('js.j2').render(
             layers=rendered_layers,
             viewport=rendered_viewport,
-            is_orbit_view=self.viewport.__class__.__name__ == 'OrbitView',
+            is_xyz_view=self.viewport.__class__.__name__ == 'XYZView',
             blend=self.blend,
             add_tooltip=self.add_tooltip,
             mapbox_api_key=self.mapbox_api_key)
