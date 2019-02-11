@@ -20,7 +20,7 @@ color_scale = sly.ColorScale(
     variable_name='label_name',
     scale_type='categorical_random')
 
-v = sly.OrbitView(distance=10)
+v = sly.XYZView(distance=10, zoom=20)
 
 s = sly.Slayer(v, add_legend=False, blend=True) + \
     sly.PointCloudLayer(
