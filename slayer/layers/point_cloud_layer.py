@@ -24,7 +24,7 @@ class PointCloudLayer(Layer):
         data,
         radius_pixels=4,
         position=['x', 'y', 'z'],
-        coordinate_system='COORDINATE_SYSTEM.IDENTITY',
+        coordinate_system='COORDINATE_SYSTEM.METERS',
         normal=[0, 0, 1],
         color=ORANGE_RGB,
         time_field=None,
@@ -44,7 +44,7 @@ class PointCloudLayer(Layer):
         # TODO don't hardcode this
         self.light_settings = '''
           {
-            coordinateSystem: COORDINATE_SYSTEM.IDENTITY,
+            coordinateSystem: COORDINATE_SYSTEM.METERS,
             lightsPosition: [20, 100, 100, 50, 0, 0],
             lightsStrength: [1, 0, 2, 0],
             numberOfLights: 2,
