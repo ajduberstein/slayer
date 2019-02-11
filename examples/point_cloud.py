@@ -14,12 +14,13 @@ lidar = pd.concat([pd.read_csv(DATA_URL), pd.read_csv(DATA_URL_2)])
 lookup = pd.read_csv(LOOKUP_URL)
 lidar = lidar.merge(lookup)
 
-v = sly.OrbitView()
 
 color_scale = sly.ColorScale(
     palette='random',
     variable_name='label_name',
     scale_type='categorical_random')
+
+v = sly.OrbitView(distance=10)
 
 s = sly.Slayer(v, add_legend=False, blend=True) + \
     sly.PointCloudLayer(

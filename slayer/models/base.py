@@ -9,3 +9,6 @@ class ViewportInterface(object):
 
     def render(self):
         raise NotImplementedError("Class %s doesn't implement render()" % (self.__class__.__name__))
+
+    def autocompute(self):
+        raise NotImplementedError("Class %s doesn't implement autocompute()" % (self.__class__.__name__))
