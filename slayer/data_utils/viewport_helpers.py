@@ -3,6 +3,7 @@ Functions that make it easier to provide a default centering
 for the Viewport, rather than having to toggle parameters
 """
 import numpy as np
+import pandas as pd
 
 
 def _squared_diff(x, x0):
@@ -112,3 +113,22 @@ def bbox_to_zoom_level(bbox):
         if (zoom_level < 1):
             zoom_level = 1
     return zoom_level
+
+
+def autocompute_viewport(viewport_type, points, view_proportion):
+    """Automatically computes a zoom level for the points passed in.
+
+    Args:
+        points (:obj:`list` of :obj:`list` of :obj:`float` or :obj:`pandas.DataFrame`): A list of points
+        view_propotion (float): Proportion of the data that is meaningful to plot
+
+    Returns:
+        slayer.ViewportInterface: Viewport fitted to the data
+    """
+    if isinstance(points, pd.DataFrame):
+        points = points.to_records(index=False)
+    bbox = get_bbox(get_n_pct(points, view_proportion))
+    zoom = bbox_to_zoom_level(bbox)
+    center = geometric_mean(points)
+    instance = viewport_type(latitude=center[1], longitude=center[0], zoom=zoom)
+    return instance

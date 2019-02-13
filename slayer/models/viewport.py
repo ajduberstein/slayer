@@ -5,12 +5,7 @@ import jinja2
 import pandas as pd
 
 from .base import ViewportInterface
-from ..data_utils.viewport_helpers import (
-    bbox_to_zoom_level,
-    geometric_mean,
-    get_bbox,
-    get_n_pct
-)
+from ..data_utils.viewport_helpers import autocompute_viewport
 
 
 view_state_template = jinja2.Template('''
@@ -90,13 +85,7 @@ class Viewport(ViewportInterface):
         Returns:
             slayer.Viewport: Viewport fitted to the data
         """
-        if isinstance(points, pd.DataFrame):
-            points = points.to_records(index=False)
-        bbox = get_bbox(get_n_pct(points, view_proportion))
-        zoom = bbox_to_zoom_level(bbox)
-        center = geometric_mean(points)
-        instance = cls(latitude=center[1], longitude=center[0], zoom=zoom)
-        return instance
+        return autocompute_viewport(cls, points, view_proportion)
 
     def is_third_person(self):
         return self.third_person == 'true'

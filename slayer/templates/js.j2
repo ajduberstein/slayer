@@ -19,11 +19,11 @@ function getLayers() {
 
 var deckgl = new deck.DeckGL({
   container: 'map-container',
+{% if not is_xyz_view  %}
   mapboxApiAccessToken: '{{ mapbox_api_key }}',
+{% endif  %}
   initialViewState: INITIAL_VIEW_STATE,
-{% if is_orbit_view %}
-  views: [new OrbitView()],
-{% endif %}
+  views: [new MapView()],
   onViewportChange: onViewportChange,
 {% if blend %}
   onWebGLInitialized: webGLInit || None,
@@ -35,8 +35,8 @@ var deckgl = new deck.DeckGL({
 {% endif %}
 });
 
+
 function onViewportChange(viewport) {
-  console.log(JSON.stringify(viewport));
   deckgl.setProps({viewState: viewport});
 }
 
