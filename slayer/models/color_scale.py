@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from collections import OrderedDict
 from warnings import warn
+import json
 import jinja2
 
 import pandas as pd
@@ -57,6 +58,8 @@ class ColorScale(RenderInterface):
         self.display_formatter = display_formatter
         if data is not None:
             self.set_data(data)
+        self.display_formatter = display_formatter
+        self.gradient_lookup = None
 
     def set_data(self, data):
         if isinstance(data, pd.DataFrame):
@@ -101,6 +104,9 @@ class ColorScale(RenderInterface):
     def is_categorical(self):
         """Returns True if categorical scale, False otherwise"""
         return self.scale_type in ('categorical', 'categorical_random')
+
+    def __repr__(self):
+        return self.render()
 
 
 def produce_categorical_gradient(data_vector, scale_type, palette):
