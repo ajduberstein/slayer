@@ -2,6 +2,10 @@
 
 var layers = [];
 
+{% if color_lookup %}
+const COLOR_LOOKUP = {{color_lookup}};
+{% endif %}
+
 function getLayers() {
   return [
     {{ layers }}

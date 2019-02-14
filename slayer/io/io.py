@@ -4,6 +4,7 @@ import os
 import os.path
 import jinja2
 import tempfile
+import time
 import webbrowser
 
 from IPython.display import IFrame
@@ -73,6 +74,8 @@ def display_html(html_str, filename=None):
             f.write(html_str)
             path = os.path.realpath(f.name)
             url = 'file://{}'.format(path)
+            # Hack to prevent blank page
+            time.sleep(1)
             webbrowser.open(url)
         elif in_ipynb():
             f = open_named_or_temporary_file(filename=filename, dir=os.getcwd())

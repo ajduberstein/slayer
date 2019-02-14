@@ -2,15 +2,17 @@ from __future__ import absolute_import
 
 from collections import OrderedDict
 from warnings import warn
+import json
 
 import pandas as pd
 
+from .base import RenderInterface
 from .scales.colors import DEFAULT_PALETTES, get_random_rgb
-from .scales.breaks import calculate_breaks, VALID_SCALES
+from .scales.breaks import VALID_SCALES, calculate_breaks
 from .scales.interpolate import interpolate
 
 
-class ColorScale(object):
+class ColorScale(RenderInterface):
     """Computes a lookup between a vector of data and color values across
     the data.
 
@@ -53,6 +55,7 @@ class ColorScale(object):
         if data is not None:
             self.set_data(data)
         self.display_formatter = display_formatter
+        self.gradient_lookup = None
 
     def set_data(self, data):
         if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
@@ -70,7 +73,7 @@ class ColorScale(object):
             self.gradient_lookup = produce_numerical_gradient(breaks, self.palette)
 
     def get_gradient_lookup(self, for_display=False):
-        if self.gradient_lookup is None:
+        if not self.gradient_lookup:
             raise ValueError('Data must be set to get the gradient lookup')
         if for_display:
             display_dict = OrderedDict([])
@@ -81,9 +84,17 @@ class ColorScale(object):
             return display_dict
         return self.gradient_lookup
 
+    def render(self):
+        if self.gradient_lookup is None:
+            raise ValueError('Data must be set to get the gradient lookup')
+        return json.dumps({self.variable_name: self.gradient_lookup})
+
     def is_categorical(self):
         """Returns True if categorical scale, False otherwise"""
         return self.scale_type in ('categorical', 'categorical_random')
+
+    def __repr__(self):
+        return self.render()
 
 
 def produce_categorical_gradient(data_vector, scale_type, palette):

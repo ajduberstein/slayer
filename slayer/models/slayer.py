@@ -52,6 +52,7 @@ class Slayer(object):
         self._timer = timer or Timer()
         self.drag_boxes = drag_boxes
         self.add_tooltip = add_tooltip
+        self._color_lookups = []
 
     def __add__(self, obj):
         """Appends a Layer, Viewport, Timer, or Style object
@@ -84,6 +85,7 @@ class Slayer(object):
             if layer.time_field is not None:
                 layer.data['__ts'] = layer.data[layer.time_field].apply(lambda ts: self._timer.coerce_to_number(ts))
                 self._timer.fit_min_and_max(layer)
+            self._color_lookups.append(layer.get_color_lookup())
             layers.append(layer.render())
         return ',\n'.join(layers)
 
@@ -108,6 +110,7 @@ class Slayer(object):
             layers=rendered_layers,
             viewport=rendered_viewport,
             is_orbit_view=self.viewport.__class__.__name__ == 'OrbitView',
+            color_lookup=',\n'.join(self._color_lookups),
             blend=self.blend,
             add_tooltip=self.add_tooltip,
             mapbox_api_key=self.mapbox_api_key)

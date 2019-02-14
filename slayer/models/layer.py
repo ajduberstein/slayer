@@ -114,8 +114,8 @@ class Layer(RenderInterface):
 
         ```
         getPosition: {{ get_position }},
-        data: {{ data }},
         getColor: {{ get_color }}
+        data: {{ data }},
         ```
 
         which will then be called by `render`
@@ -125,12 +125,13 @@ class Layer(RenderInterface):
             if attr not in VALID_LAYER_KEYWORDS:
                 continue
             js_func_str = self.js_function_overrides.get(attr) or '{{ %s }}' % attr
-            deckgl_chart_arg = '\n\t\t{named_arg}: {js_func}'.format(named_arg=camelCase(attr), js_func=js_func_str)
+            deckgl_chart_arg = '{named_arg}: {js_func}'.format(named_arg=camelCase(attr), js_func=js_func_str)
             if attr == 'data':
-                deckgl_chart_arg = '\n\t\t{named_arg}: {data}'.format(
-                    named_arg='data', data=self.data.to_json(orient='records', date_format='iso'))
+                chart_data = self.data.to_json(orient='records', date_format='iso')
+                deckgl_chart_arg = '{named_arg}: {data}'.format(
+                    named_arg='data', data=chart_data)
             deckgl_chart_args.append(deckgl_chart_arg)
-        return ','.join(deckgl_chart_args)
+        return ',\n'.join(deckgl_chart_args)
 
     def render(self):
         template = jinja2.Template(
@@ -160,3 +161,8 @@ class Layer(RenderInterface):
             return self.color.variable_name
         if isinstance(self.color, str):
             return self.color
+
+    def get_color_lookup(self):
+        if isinstance(self.color, ColorScale):
+            return self.color.render()
+        return None
