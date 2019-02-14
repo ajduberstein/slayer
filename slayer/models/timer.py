@@ -24,7 +24,7 @@ class Timer(object):
     Attributes: min_time (float): Earliest time listed in the data, in seconds.
         max_time (float): Latest time listed in the data, in seconds.
         js_display_format (str): Display string using Moment.js. For examples, see https://momentjs.com/
-        js_tz (str): Timezone for moment.js, defaults to UTC.
+        js_tz (str): Timezone for moment.js, if other than UTC.
         increment_unit (float): Number of seconds to increment the timer by on every tick
         controls (:obj:`list` of :obj:`str`): List of timer controls to render.
     """
@@ -36,7 +36,7 @@ class Timer(object):
             tick_rate=0.5,
             controls=['pause', 'play', 'fast_forward', 'rewind'],
             js_display_format=None,
-            js_tz='UTC',
+            js_tz=None,
             loop=True,
             cumulative=True,
             min_time=float('inf'),
