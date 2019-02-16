@@ -94,6 +94,12 @@ class Slayer(object):
             layers.append(layer.render())
         return ',\n'.join(layers)
 
+    def _format_color_lookups(self):
+        lookup = ',\n'.join(x for x in self._color_lookups if x)
+        if lookup:
+            return lookup
+        return ''
+
     def to_html(self, filename=None, interactive=False, html_only=False, js_only=False):
         """Converts all layers and viewport objects into HTML
 
