@@ -34,7 +34,8 @@ class ColorScale(RenderInterface):
         data=None
     ):
         # Set palette
-        if isinstance(palette, str) and palette in DEFAULT_PALETTES.keys():
+        is_known_palette = isinstance(palette, str) and palette in DEFAULT_PALETTES.keys()
+        if is_known_palette:
             self.palette = DEFAULT_PALETTES[palette]
         elif isinstance(palette, list):
             self.palette = palette
@@ -52,15 +53,13 @@ class ColorScale(RenderInterface):
             raise Exception('`scale_type` must be one of the following: %s' % ', '.join(VALID_SCALES))
         self.scale_type = scale_type
         self.num_classes = num_classes
+        self.gradient_lookup = None
+        self.display_formatter = display_formatter
         if data is not None:
             self.set_data(data)
-        self.display_formatter = display_formatter
-        self.gradient_lookup = None
 
     def set_data(self, data):
-        if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
-            self.data_vector = [d[self.variable_name] for d in data]
-        elif isinstance(data, pd.DataFrame):
+        if isinstance(data, pd.DataFrame):
             self.data_vector = data[self.variable_name]
         else:
             raise TypeError('Data can only be set from a pandas.DataFrame, received', type(data))
@@ -92,9 +91,6 @@ class ColorScale(RenderInterface):
     def is_categorical(self):
         """Returns True if categorical scale, False otherwise"""
         return self.scale_type in ('categorical', 'categorical_random')
-
-    def __repr__(self):
-        return self.render()
 
 
 def produce_categorical_gradient(data_vector, scale_type, palette):

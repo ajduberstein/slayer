@@ -1,9 +1,10 @@
 function addDatetimeLabel(datetime) {
   var h = document.createElement('div');
+  var ts = datetime;
   {% if timer.js_display_format and timer.js_tz %}
-  var ts = moment.unix(datetime).tz('{{timer.js_tz}}').format('{{timer.js_display_format}}');
+  ts = moment.unix(datetime).tz('{{timer.js_tz}}').format('{{timer.js_display_format}}');
   {% elif timer.js_display_format%}
-  var ts = moment.unix(datetime).format('{{timer.js_display_format}}');
+  ts = moment.unix(datetime).format('{{timer.js_display_format}}');
   {% endif %}
   h.innerHTML = '' + ts;
   h.id = 'datetimeLabel';
