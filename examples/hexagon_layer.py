@@ -8,7 +8,6 @@ DATA_URL = 'https://raw.githubusercontent.com/ajduberstein/sf_growth/master/publ
 businesses = pd.read_csv(DATA_URL)
 businesses['start_date'] = businesses['start_date'].apply(lambda x: str(x))
 
-
 s = sly.Slayer(sly.Viewport(longitude=-122.43, latitude=37.76, zoom=12, bearing=-65, pitch=60)) + \
     sly.Timer(
         input_type='iso8601',

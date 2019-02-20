@@ -2,9 +2,13 @@
 
 var layers = [];
 
-{% if color_lookup %}
+{% if color_lookups %}
 {% include 'interval_lookup.j2' %}
-const COLOR_LOOKUP = new IntervalLookup({{color_lookup}});
+const COLOR_LOOKUP = {
+{% for color_lookup in color_lookups %}
+  {{ color_lookup }}
+{% endfor %}
+};
 {% endif %}
 
 function getLayers() {
@@ -12,7 +16,6 @@ function getLayers() {
     {{ layers }}
   ];
 }
-
 
 {% if blend %}
 {% include 'blend_js.j2' %}

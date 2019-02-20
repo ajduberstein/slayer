@@ -56,18 +56,8 @@ def make_js_get_color(color, use_time=False):
         # RGBA value
         func_pieces.append(CONST_TEMPLATE % color)
     elif isinstance(color, ColorScale):
-        # TODO simplify color lookups
-        # Numerical data lookup should be an interval tree
-        if color.is_categorical():
-            func_pieces.append('return COLOR_LOOKUP["{variable_name}"][x["{variable_name}"]];'.format(
-                variable_name=color.variable_name))
-        else:
-            lookup = color.get_gradient_lookup()
-            conditional_str = ''
-            conditional_str = _make_deckgl_conditional(
-                lookup.keys(), lookup.values(), color.variable_name
-            )
-            func_pieces.append(CONDITIONAL_TEMPLATE % conditional_str)
+        # See interval_lookup.j2
+        func_pieces.append('return COLOR_LOOKUP["{}"].get(x);'.format(color.variable_name))
     func = '\n'.join(func_pieces)
     return func
     # TODO support custom ranges
@@ -96,40 +86,6 @@ def _safe_get(arr, idx, default=None):
         return arr[idx]
     except IndexError:
         return default
-
-
-def _make_deckgl_conditional(breaks_list, characteristic_list, attr_name):
-    """Creates a JS conditional statement for use in deck.gl functions"""
-    js_pieces = []
-    js_conditional_template = _get_js_conditional_template()
-    characteristic_list = list(characteristic_list)
-    breaks_list = list(breaks_list)
-    i = 0
-    while i < len(breaks_list):
-        parameters_tup = _get_parameters_tup(i, breaks_list, attr_name, characteristic_list)
-        if_statement = js_conditional_template % parameters_tup
-        js_pieces.append(if_statement)
-        i += 1
-    return _cut_first_else('\n'.join(js_pieces))
-
-
-def _get_js_conditional_template():
-    js_conditional_template = 'else if (%s <= x["%s"] && x["%s"] < %s) {  return %s; }'
-    return js_conditional_template
-
-
-def _get_parameters_tup(idx, breaks_list, attr_name, characteristic_list):
-    parameters_tup = (
-        breaks_list[idx],
-        attr_name,
-        attr_name,
-        _safe_get(breaks_list, idx + 1, 'Infinity'),
-        characteristic_list[idx])
-    return parameters_tup
-
-
-def _cut_first_else(string):
-    return string.replace('else', '', 1).strip()
 
 
 @wrap_js_func

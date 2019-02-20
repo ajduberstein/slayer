@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from collections import OrderedDict
 from warnings import warn
 import json
+import jinja2
 
 import pandas as pd
 
@@ -72,21 +73,31 @@ class ColorScale(RenderInterface):
             self.gradient_lookup = produce_numerical_gradient(breaks, self.palette)
 
     def get_gradient_lookup(self, for_display=False):
+        """Get gradient lookup (map of values to color)
+
+        Args:
+            for_display (bool): If true, format for display in a legend
+        """
         if not self.gradient_lookup:
             raise ValueError('Data must be set to get the gradient lookup')
-        if for_display:
-            display_dict = OrderedDict([])
-            for k in self.gradient_lookup.keys():
+        display_dict = OrderedDict([])
+        for k in self.gradient_lookup.keys():
+            if for_display:
                 str_rgba = ', '.join([str(int(x)) for x in self.gradient_lookup[k]])
                 display_k = self.display_formatter % k if self.display_formatter else k
                 display_dict[display_k] = str_rgba
-            return display_dict
-        return self.gradient_lookup
+        return display_dict or self.gradient_lookup
 
     def render(self):
         if self.gradient_lookup is None:
             raise ValueError('Data must be set to get the gradient lookup')
-        return json.dumps({self.variable_name: self.gradient_lookup})
+        stringified_keys = [str(k) for k in self.gradient_lookup.keys()]
+        t = jinja2.Template('''
+        '{{color_lookup.variable_name}}': new IntervalLookup(
+            {{stringified_keys}},
+            {{color_lookup.gradient_lookup.values()}}),
+        ''').render(color_lookup=self, stringified_keys=stringified_keys)
+        return t
 
     def is_categorical(self):
         """Returns True if categorical scale, False otherwise"""
