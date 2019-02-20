@@ -1,0 +1,60 @@
+var bisect = function(list, val) {
+  if (typeof val === 'string') {
+    return undefined;
+  }
+  var idx;
+  if (list.length === 0) {
+    return 0;
+  }
+  for (idx = 0; idx < list.length; idx++) {
+    if (val < list[idx]) {
+      return idx;
+    }
+  }
+  return idx;
+};
+
+
+IntervalLookup = function(keyArray, valueArray) {
+  this._keyArray = keyArray;
+  this._valueArray = valueArray;
+  this._dict = {};
+  var k, v;
+  for (var i = 0; i < keyArray.length; i++) {
+    k = keyArray[i];
+    this._dict[k] = valueArray[i];
+  }
+};
+
+IntervalLookup.prototype.get = function(lookupValue) {
+  if (this._dict[lookupValue] === undefined) {
+    var imputedIdx = bisect(this._keyArray, lookupValue) - 1;
+    return this._valueArray[imputedIdx];
+  }
+  return this._dict[lookupValue];
+};
+
+IntervalLookup.prototype = Object.create(IntervalLookup.prototype);
+IntervalLookup.prototype.constructor = IntervalLookup;
+
+{# development only
+var LOWER_BOUNDS = [1, 10, 100];
+var COLORS = ['red', 'yellow', 'blue'];
+
+// Should only return lower bounds
+var numerical = new IntervalLookup(LOWER_BOUNDS, COLORS);
+console.log('Should be red', numerical.get(1));
+console.log('Should be red', numerical.get(1.5));
+console.log('Should be yellow', numerical.get(10));
+console.log('Should be yellow', numerical.get(11));
+console.log('Should be blue', numerical.get(1000));
+console.log('Should be undefined', numerical.get(-1));
+console.log('Should be undefined', numerical.get(0.5));
+console.log('Should be undefined', numerical.get(0));
+
+var categorical = new IntervalLookup(['a', 'b', 'c'], COLORS);
+console.log('Should be red', categorical.get('a'));
+console.log('Should be yellow', categorical.get('b'));
+console.log('Should be blue', categorical.get('c'));
+console.log('Should be undefined', categorical.get('d'));
+#}

@@ -3,7 +3,8 @@
 var layers = [];
 
 {% if color_lookup %}
-const COLOR_LOOKUP = {{color_lookup}};
+{% include 'interval_lookup.j2' %}
+const COLOR_LOOKUP = new IntervalLookup({{color_lookup}});
 {% endif %}
 
 function getLayers() {
