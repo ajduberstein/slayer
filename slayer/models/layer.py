@@ -164,4 +164,4 @@ class Layer(RenderInterface):
 
     def get_color_lookup(self):
         if isinstance(self.color, ColorScale):
-            return self.color.render()
+            return self.color

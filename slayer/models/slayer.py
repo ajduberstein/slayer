@@ -88,17 +88,15 @@ class Slayer(object):
                 layer.data['__ts'] = layer.data[layer.time_field].apply(
                     lambda ts: self._timer.coerce_to_number(ts))
                 self._timer.fit_min_and_max(layer)
+<<<<<<< HEAD
             color_lookup = layer.get_color_lookup()
             if color_lookup:
                 self._color_lookups.append(color_lookup.render())
+=======
+            self._color_lookups.append(layer.get_color_lookup().render())
+>>>>>>> WIP use interval dictionary lookup
             layers.append(layer.render())
         return ',\n'.join(layers)
-
-    def _format_color_lookups(self):
-        lookup = ',\n'.join(x for x in self._color_lookups if x)
-        if lookup:
-            return lookup
-        return ''
 
     def to_html(self, filename=None, interactive=False, html_only=False, js_only=False):
         """Converts all layers and viewport objects into HTML
@@ -123,7 +121,7 @@ class Slayer(object):
             color_lookups=self._color_lookups,
             add_fps_box=self.add_fps_box,
             is_xyz_view=self.viewport.__class__.__name__ == 'XYZView',
-            color_lookup=',\n'.join(self._color_lookups),
+            color_lookups=self._color_lookups,
             blend=self.blend,
             add_tooltip=self.add_tooltip,
             mapbox_api_key=self.mapbox_api_key)
