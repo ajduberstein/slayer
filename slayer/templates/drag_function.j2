@@ -1,10 +1,10 @@
 dragElement(document.getElementById("legend"));
 // Timer
-// dragElement(document.getElementById("labels"));
+dragElement(document.getElementById("datetimeLabel"));
 
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  if (elmt && elmnt.id && document.getElementById(elmnt.id + "header")) {
+  if (elmnt && elmnt.id && document.getElementById(elmnt.id + "header")) {
     document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
   } else {
     elmnt.onmousedown = dragMouseDown;
