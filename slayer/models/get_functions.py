@@ -57,7 +57,8 @@ def make_js_get_color(color, use_time=False):
         func_pieces.append(CONST_TEMPLATE % color)
     elif isinstance(color, ColorScale):
         # See interval_lookup.j2
-        func_pieces.append('return COLOR_LOOKUP["{}"].get(x);'.format(color.variable_name))
+        func_pieces.append(
+            'return COLOR_LOOKUP["{variable}"].get(x["{variable}"]);'.format(variable=color.variable_name))
     func = '\n'.join(func_pieces)
     return func
     # TODO support custom ranges
