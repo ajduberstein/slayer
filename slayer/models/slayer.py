@@ -122,6 +122,7 @@ class Slayer(object):
             add_fps_box=self.add_fps_box,
             is_xyz_view=self.viewport.__class__.__name__ == 'XYZView',
             color_lookups=self._color_lookups,
+            add_fps_box=self.add_fps_box,
             blend=self.blend,
             add_tooltip=self.add_tooltip,
             mapbox_api_key=self.mapbox_api_key)
