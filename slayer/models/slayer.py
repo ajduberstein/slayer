@@ -116,6 +116,7 @@ class Slayer(object):
             viewport=rendered_viewport,
             is_orbit_view=self.viewport.__class__.__name__ == 'OrbitView',
             color_lookups=self._color_lookups,
+            add_fps_box=self.add_fps_box,
             blend=self.blend,
             add_tooltip=self.add_tooltip,
             mapbox_api_key=self.mapbox_api_key)
@@ -124,7 +125,6 @@ class Slayer(object):
         html = j2_env.get_template('body.j2').render(
             timer=self._timer if self._timer.is_enabled() else None,
             add_tooltip=self.add_tooltip,
-            add_fps_box=self.add_fps_box,
             color_field=color_field,
             legend=legend,
             style=self._style,
