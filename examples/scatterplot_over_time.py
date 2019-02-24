@@ -12,7 +12,7 @@ uber_pickups = ('https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil
 df = pd.read_csv(uber_pickups)
 df['Date/Time'] = df['Date/Time'].apply(lambda d: pd.Timestamp.strptime(d, '%m/%d/%Y %H:%M:%S'))
 
-v = sly.Viewport(latitude=40.74000520746832, longitude=-73.97681683903477)
+v = sly.Viewport(latitude=40.74000520746832, longitude=-73.97681683903477, zoom=10)
 t = sly.Timer(input_type='datetime', increment_by='1 hour', tick_rate=0.5)
 s = sly.Slayer(viewport=v, timer=t)
 p = sly.Scatterplot(df, radius=100, position=['Lon', 'Lat'], time_field='Date/Time')
