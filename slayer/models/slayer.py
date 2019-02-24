@@ -86,7 +86,9 @@ class Slayer(object):
                 layer.data['__ts'] = layer.data[layer.time_field].apply(
                     lambda ts: self._timer.coerce_to_number(ts))
                 self._timer.fit_min_and_max(layer)
-            self._color_lookups.append(layer.get_color_lookup().render())
+            color_lookup = layer.get_color_lookup()
+            if color_lookup:
+                self._color_lookups.append(color_lookup.render())
             layers.append(layer.render())
         return ',\n'.join(layers)
 
