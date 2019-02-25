@@ -40,6 +40,7 @@ class Slayer(object):
         add_legend=True,
         mapbox_api_key=None,
         blend=False,
+        add_fps_box=False,
         drag_boxes=True,
         add_tooltip=True
     ):
@@ -52,6 +53,8 @@ class Slayer(object):
         self._timer = timer or Timer()
         self.drag_boxes = drag_boxes
         self.add_tooltip = add_tooltip
+        self.add_fps_box = add_fps_box
+        self._color_lookups = []
 
     def __add__(self, obj):
         """Appends a Layer, Viewport, Timer, or Style object
@@ -82,8 +85,12 @@ class Slayer(object):
         layers = []
         for layer in self._layers:
             if layer.time_field is not None:
-                layer.data['__ts'] = layer.data[layer.time_field].apply(lambda ts: self._timer.coerce_to_number(ts))
+                layer.data['__ts'] = layer.data[layer.time_field].apply(
+                    lambda ts: self._timer.coerce_to_number(ts))
                 self._timer.fit_min_and_max(layer)
+            color_lookup = layer.get_color_lookup()
+            if color_lookup:
+                self._color_lookups.append(color_lookup.render())
             layers.append(layer.render())
         return ',\n'.join(layers)
 
@@ -107,6 +114,8 @@ class Slayer(object):
         js = j2_env.get_template('js.j2').render(
             layers=rendered_layers,
             viewport=rendered_viewport,
+            color_lookups=self._color_lookups,
+            add_fps_box=self.add_fps_box,
             is_xyz_view=self.viewport.__class__.__name__ == 'XYZView',
             blend=self.blend,
             add_tooltip=self.add_tooltip,

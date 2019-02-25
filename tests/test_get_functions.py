@@ -1,3 +1,5 @@
+import pandas as pd
+
 from slayer.models.get_functions import (
     make_js_get_position,
     make_js_get_color,
@@ -18,17 +20,10 @@ def test_make_js_get_color():
     assert make_js_get_color([255, 255, 255]) == 'function (x) { return [255, 255, 255]; }'
     assert make_js_get_color([255, 255, 255, 0]) == 'function (x) { return [255, 255, 255, 0]; }'
 
-    FAKE_DATA = [{'comitates': i} for i in range(0, 10)]
+    FAKE_DATA = pd.DataFrame([{'comitates': i} for i in range(0, 10)])
     color_js = make_js_get_color(
             ColorScale(data=FAKE_DATA, variable_name='comitates', palette='BuPu', num_classes=2))
-    EXPECTATION = (
-            'function (x) {'
-            '  if (0.0 <= x["comitates"] && x["comitates"] < 4.5) {'
-            '    return [224.0, 236.0, 244.0];'
-            '  } else if (4.5 <= x["comitates"] && x["comitates"] < Infinity) {'
-            '    return [180.0, 161.0, 205.5];'
-            '  }'
-            '}')
+    EXPECTATION = 'function(x){return COLOR_LOOKUP.comitates.get(x.comitates);};'
     print(color_js)
     assert check_js_equal(EXPECTATION, color_js)
 

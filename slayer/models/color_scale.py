@@ -2,15 +2,18 @@ from __future__ import absolute_import
 
 from collections import OrderedDict
 from warnings import warn
+import json
+import jinja2
 
 import pandas as pd
 
+from .base import RenderInterface
 from .scales.colors import DEFAULT_PALETTES, get_random_rgb
-from .scales.breaks import calculate_breaks, VALID_SCALES
+from .scales.breaks import VALID_SCALES, calculate_breaks
 from .scales.interpolate import interpolate
 
 
-class ColorScale(object):
+class ColorScale(RenderInterface):
     """Computes a lookup between a vector of data and color values across
     the data.
 
@@ -32,7 +35,8 @@ class ColorScale(object):
         data=None
     ):
         # Set palette
-        if isinstance(palette, str) and palette in DEFAULT_PALETTES.keys():
+        is_known_palette = isinstance(palette, str) and palette in DEFAULT_PALETTES.keys()
+        if is_known_palette:
             self.palette = DEFAULT_PALETTES[palette]
         elif isinstance(palette, list):
             self.palette = palette
@@ -50,14 +54,13 @@ class ColorScale(object):
             raise Exception('`scale_type` must be one of the following: %s' % ', '.join(VALID_SCALES))
         self.scale_type = scale_type
         self.num_classes = num_classes
+        self.gradient_lookup = None
+        self.display_formatter = display_formatter
         if data is not None:
             self.set_data(data)
-        self.display_formatter = display_formatter
 
     def set_data(self, data):
-        if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
-            self.data_vector = [d[self.variable_name] for d in data]
-        elif isinstance(data, pd.DataFrame):
+        if isinstance(data, pd.DataFrame):
             self.data_vector = data[self.variable_name]
         else:
             raise TypeError('Data can only be set from a pandas.DataFrame, received', type(data))
@@ -70,16 +73,31 @@ class ColorScale(object):
             self.gradient_lookup = produce_numerical_gradient(breaks, self.palette)
 
     def get_gradient_lookup(self, for_display=False):
-        if self.gradient_lookup is None:
+        """Get gradient lookup (map of values to color)
+
+        Args:
+            for_display (bool): If true, format for display in a legend
+        """
+        if not self.gradient_lookup:
             raise ValueError('Data must be set to get the gradient lookup')
-        if for_display:
-            display_dict = OrderedDict([])
-            for k in self.gradient_lookup.keys():
+        display_dict = OrderedDict([])
+        for k in self.gradient_lookup.keys():
+            if for_display:
                 str_rgba = ', '.join([str(int(x)) for x in self.gradient_lookup[k]])
                 display_k = self.display_formatter % k if self.display_formatter else k
                 display_dict[display_k] = str_rgba
-            return display_dict
-        return self.gradient_lookup
+        return display_dict or self.gradient_lookup
+
+    def render(self):
+        if self.gradient_lookup is None:
+            raise ValueError('Data must be set to get the gradient lookup')
+        stringified_keys = [str(k) for k in self.gradient_lookup.keys()]
+        t = jinja2.Template('''
+        '{{color_lookup.variable_name}}': new IntervalLookup(
+            {{stringified_keys}},
+            {{color_lookup.gradient_lookup.values()}}),
+        ''').render(color_lookup=self, stringified_keys=stringified_keys)
+        return t
 
     def is_categorical(self):
         """Returns True if categorical scale, False otherwise"""
@@ -88,7 +106,8 @@ class ColorScale(object):
 
 def produce_categorical_gradient(data_vector, scale_type, palette):
     # Choose from a common gradient
-    classes = sorted(list(set(data_vector)))
+    deduped_classes = list(set(data_vector))
+    classes = sorted([str(x) for x in deduped_classes])
     if scale_type == 'categorical' and len(classes) > len(palette):
         warn('Number of categories for the specified column is greater '
              'than the number of colors available in the color palette. '

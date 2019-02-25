@@ -47,6 +47,6 @@ class HexagonLayer(Layer):
         if isinstance(color_range, list):
             return color_range
         raise TypeError(
-            '`color_range` must be a string indicating a ColorBrewer '
-            'palette or a `list` of RGBA values. Valid palettes: '
+            '`color_range` must be a string indicating a ColorBrewer palette or ' +
+            'a `list` of RGBA values. Valid palettes: ' +
             ', '.join(palette_names))

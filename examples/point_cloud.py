@@ -27,5 +27,5 @@ s = sly.Slayer(v, add_legend=False, blend=True) + \
         lidar[['x', 'y', 'z', 'label_name']],
         position=['x', 'y', 'z'],
         color=color_scale,
-        radius_pixels=15)
+        radius_pixels=2)
 s.to_html('point_cloud.html', interactive=True)
