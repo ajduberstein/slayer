@@ -88,13 +88,9 @@ class Slayer(object):
                 layer.data['__ts'] = layer.data[layer.time_field].apply(
                     lambda ts: self._timer.coerce_to_number(ts))
                 self._timer.fit_min_and_max(layer)
-<<<<<<< HEAD
             color_lookup = layer.get_color_lookup()
             if color_lookup:
                 self._color_lookups.append(color_lookup.render())
-=======
-            self._color_lookups.append(layer.get_color_lookup().render())
->>>>>>> WIP use interval dictionary lookup
             layers.append(layer.render())
         return ',\n'.join(layers)
 
@@ -121,8 +117,6 @@ class Slayer(object):
             color_lookups=self._color_lookups,
             add_fps_box=self.add_fps_box,
             is_xyz_view=self.viewport.__class__.__name__ == 'XYZView',
-            color_lookups=self._color_lookups,
-            add_fps_box=self.add_fps_box,
             blend=self.blend,
             add_tooltip=self.add_tooltip,
             mapbox_api_key=self.mapbox_api_key)
