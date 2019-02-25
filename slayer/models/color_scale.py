@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 from collections import OrderedDict
 from warnings import warn
-import json
 import jinja2
 
 import pandas as pd
@@ -106,7 +105,8 @@ class ColorScale(RenderInterface):
 
 def produce_categorical_gradient(data_vector, scale_type, palette):
     # Choose from a common gradient
-    classes = sorted(list(set(data_vector)))
+    deduped_classes = list(set(data_vector))
+    classes = sorted([str(x) for x in deduped_classes])
     if scale_type == 'categorical' and len(classes) > len(palette):
         warn('Number of categories for the specified column is greater '
              'than the number of colors available in the color palette. '
