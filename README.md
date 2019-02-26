@@ -9,8 +9,8 @@ Short for "Spatial Layers," Slayer is a Python wrapper around [deck.gl](http://d
 
 _Features_
 
-- Scale. Built on WebGL, Slayer plots hundreds of thousands of points.
-- Focus on Data Science, Analytics, and GIS. API treats Pandas as a first class citizen.
+- Scale. Built on [deck.gl](http://deck.gl/#/), Slayer plots hundreds of thousands of points.
+- Focus on Data Science, Analytics, and GIS. API treats [Pandas](https://pandas.pydata.org/) as a first class citizen.
 - Time. Built for plotting data over time.
 
 For example, 1.6M LIDAR points visualized here:
