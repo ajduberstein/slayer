@@ -17,14 +17,14 @@ class GeoJsonLayer(Layer):
     """GeoJSON plotting layer
 
         Args:
-            data (geojson): GeoJSON FeatureCollection. If you'd like to use WKT, check out PolygonLayer.
+            data (str): GeoJSON FeatureCollection. If you'd like to use Well-Known Text (WKT),
+                check out PolygonLayer.
             fill_color (:obj:`slayer.ColorScale`, :obj:`str`, or :obj:`list` of :obj:`float`):
                 Desired color for data points, passable as a hex string,
                 RGB array, or `ColorScale` object for more detailed plots.
             line_color (:obj:`slayer.ColorScale`, :obj:`str`, or :obj:`list` of :obj:`float`):
                 Desired color for data points, passable as a hex string,
                 RGB array, or `ColorScale` object for more detailed plots.
-
     """
 
     def __init__(

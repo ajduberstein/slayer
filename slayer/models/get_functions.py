@@ -1,3 +1,7 @@
+import jinja2
+import textwrap
+
+
 from .color_scale import ColorScale
 
 
@@ -14,15 +18,32 @@ def wrap_js_func(func):
     return wrapper
 
 
-@wrap_js_func
+def strip_and_dedent(func):
+    def wrapper(*args, **kwargs):
+        return textwrap.dedent(func(*args, **kwargs).strip())
+    return wrapper
+
+
+@strip_and_dedent
 def make_js_get_position(position_field_names):
-    if len(position_field_names) == 2 and isinstance(position_field_names, list):
-        return 'return [x["%s"], x["%s"]]' % (position_field_names[0], position_field_names[1])
-    if len(position_field_names) == 3 and isinstance(position_field_names, list):
-        return 'return [x["%s"], x["%s"], x["%s"]]' % (
-            position_field_names[0], position_field_names[1], position_field_names[2])
-    elif isinstance(position_field_names, str):
-        return FIELD_TEMPLATE % position_field_names
+    is_list = isinstance(position_field_names, list)
+
+    POSITION_FUNCTION_TEMPLATE = jinja2.Template('''
+      function (x) {
+        return [
+
+        {%- for p in position_field_names if is_list %}
+          x["{{position_field_names[loop.index0]}}"]{{ '];' if loop.last else ',' }}
+
+        {%- else -%}
+
+        return x["{{position_field_names}}"];
+        {% endfor %}
+      }'''.strip())
+
+    return POSITION_FUNCTION_TEMPLATE.render(
+        is_list=is_list,
+        position_field_names=position_field_names)
 
 
 @wrap_js_func
@@ -42,6 +63,10 @@ def make_js_get_color(color, use_time=False):
         Returns :
             str: Executable JavaScript meant for embedding in deck.gl object.
     """
+    # TODO support custom ranges
+    # if isinstance(color, OrderedDict):
+    # Also enable categorical colors
+    # if isinstance(color, dict):
     func_pieces = []
     if use_time:
         js_filter = ('if (x["__ts"] > timeFilter) {'
@@ -61,25 +86,14 @@ def make_js_get_color(color, use_time=False):
             'return COLOR_LOOKUP["{variable}"].get(x["{variable}"]);'.format(variable=color.variable_name))
     func = '\n'.join(func_pieces)
     return func
-    # TODO support custom ranges
-    # if isinstance(color, OrderedDict):
-    # Also enable categorical colors
-    # if isinstance(color, dict):
 
 
 def make_js_get_radius(radius_field_or_value):
-    if isinstance(radius_field_or_value, (float, int)):
-        return radius_field_or_value
-    if isinstance(radius_field_or_value, str):
-        return 'function(x) { return x["%s"]; }' % radius_field_or_value
+    return get_value_or_field(radius_field_or_value)
 
 
-@wrap_js_func
 def make_js_get_normal(normal_field_or_value):
-    if isinstance(normal_field_or_value, list):
-        return CONST_TEMPLATE % normal_field_or_value
-    if isinstance(normal_field_or_value, str):
-        return FIELD_TEMPLATE % normal_field_or_value
+    return get_value_or_field(normal_field_or_value, types_to_check=(list))
 
 
 def _safe_get(arr, idx, default=None):
@@ -107,3 +121,36 @@ def make_js_get_elevation_value(elevation_value=None, use_time=False):
 
     if elevation_value is None:
         return 'function(points) { return points.length }'
+
+
+def make_js_get_elevation(elevation_value_or_field):
+    return get_value_or_field(elevation_value_or_field)
+
+
+@strip_and_dedent
+def get_value_or_field(value_or_field, types_to_check=(float, int)):
+    """Returns either a single value or JavaScript function returning a named field
+
+    In order to not end up writing JavaScript in Python, we let the programmer decide
+    between returning a named value from the underlying data or a constant.
+
+    Arguments:
+        value_or_field: Field name or constant to return.
+        types_to_check (tuple): List of types that make the `value_or_field` parameter treated as a constant.
+
+    Returns:
+        str: deck.gl layer parameter
+    """
+
+    is_value = isinstance(value_or_field, types_to_check)
+    TEMPLATE = jinja2.Template("""
+    {%- if is_value %}
+    {{value_or_field}}
+    {% else -%}
+
+    function(x) {
+      return x["{{value_or_field}}"];
+    }
+    {%- endif %}
+    """)
+    return TEMPLATE.render(is_value=is_value, value_or_field=value_or_field)
