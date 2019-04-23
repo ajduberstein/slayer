@@ -50,7 +50,7 @@ else:
 install_requires = [
     'chardet>=3.0.2,<3.1.0',
     'idna>=2.5,<2.8',
-    'urllib3>=1.21.1,<1.24',
+    'urllib3>=1.24.2',
     'certifi>=2017.4.17',
     'camel_snake_kebab==0.3.2',
     'jiphy>=1.2.2',
